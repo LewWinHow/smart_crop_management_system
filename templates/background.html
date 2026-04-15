@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}智慧农作物管理系统{% endblock %}</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        /* Keep only animation/effect CSS that Bootstrap utilities cannot cover directly. */
+        .dynamic-bg {
+            background: linear-gradient(-45deg, #1e5128, #4e944f, #83bd75, #b4e197);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        #particles-js {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+        }
+
+        .floating-plant {
+            position: fixed;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0.4;
+            animation: plantFloatUp 20s infinite linear;
+        }
+
+        @keyframes plantFloatUp {
+            0% { transform: translateY(110vh) translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.4; }
+            90% { opacity: 0.4; }
+            100% { transform: translateY(-20vh) translateX(50px) rotate(360deg); opacity: 0; }
+        }
+
+        .crop-bottom {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(transparent, rgba(30, 81, 40, 0.3));
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .static-plant {
+            position: fixed;
+            bottom: -10px;
+            z-index: 3;
+            opacity: 0.6;
+        }
+
+        .content-wrapper {
+            width: 100%;
+            position: relative;
+            z-index: 10;
+        }
+
+        .content-wrapper.layout-fullbleed {
+            background: transparent !important;
+            border: 0 !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="dynamic-bg min-vh-100 overflow-x-hidden d-flex align-items-center py-4 py-md-5" style="font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;">
+
+    <!-- 粒子层 -->
+    <div id="particles-js"></div>
+
+    <!-- 动态浮动植物粒子 (增多并分布) -->
+    <div class="floating-plant fs-2" style="left: 5%; animation-duration: 22s;">🌾</div>
+    <div class="floating-plant fs-4" style="left: 15%; animation-duration: 18s; animation-delay: 2s;">🌱</div>
+    <div class="floating-plant fs-3" style="left: 30%; animation-duration: 25s; animation-delay: 5s;">🌽</div>
+    <div class="floating-plant fs-4" style="left: 45%; animation-duration: 20s; animation-delay: 1s;">🍀</div>
+    <div class="floating-plant fs-2" style="left: 60%; animation-duration: 28s; animation-delay: 8s;">🌻</div>
+    <div class="floating-plant fs-4" style="left: 75%; animation-duration: 15s; animation-delay: 3s;">🌳</div>
+    <div class="floating-plant fs-2" style="left: 85%; animation-duration: 24s; animation-delay: 6s;">🌿</div>
+    <div class="floating-plant fs-4" style="left: 95%; animation-duration: 19s; animation-delay: 4s;">🍂</div>
+
+    <!-- 底部固定植被装饰 -->
+    <div class="static-plant fs-1" style="left: 0;">🌾</div>
+    <div class="static-plant fs-1" style="left: 10%;">🌿</div>
+    <div class="static-plant fs-1" style="left: 20%;">🌱</div>
+    <div class="static-plant fs-1" style="right: 15%;">🌻</div>
+    <div class="static-plant fs-1" style="right: 5%;">🌾</div>
+    <div class="crop-bottom"></div>
+
+    <!-- 内容区域：默认宽屏仪表盘布局；子模板可覆盖 content_shell_*（如登录页用窄容器） -->
+    <div class="{% block content_shell_class %}container-fluid position-relative px-3 px-sm-4 px-lg-5 mx-auto{% endblock %}" style="z-index: 10; {% block content_shell_style %}max-width: min(100%, 1600px);{% endblock %}">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="content-wrapper bg-white bg-opacity-75 rounded-4 shadow-lg p-3 p-sm-4 p-lg-5 border {% block content_wrapper_class %}{% endblock %}">
+                    {% block content %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Modals must be outside content_shell (z-index: 10) or Bootstrap's backdrop (z-index 1050) paints on top of the dialog. #}
+    {% block body_modals %}{% endblock %}
+
+    <!-- 粒子库脚本 -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script>
+        /* 粒子配置：调整为更像飘落的叶片或种子 */
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 120, "density": { "enable": true, "value_area": 1000 } },
+                "color": { "value": ["#ffffff", "#90be6d", "#43aa8b", "#f9c74f"] },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.4, "random": true },
+                "size": { "value": 5, "random": true },
+                "line_linked": { "enable": false },
+                "move": {
+                    "enable": true,
+                    "speed": 1.5,
+                    "direction": "bottom-right",
+                    "random": true,
+                    "straight": false,
+                    "out_mode": "out"
+                }
+            },
+            "interactivity": {
+                "detect_on": "window",
+                "events": { "onhover": { "enable": true, "mode": "repulse" } }
+            },
+            "retina_detect": true
+        });
+    </script>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

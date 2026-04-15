@@ -1,0 +1,28 @@
+{% extends "background.html" %}
+
+{% block title %}Message - Smart Crop Management{% endblock %}
+
+{% block content_shell_class %}position-relative px-3 px-sm-4 mx-auto w-100{% endblock %}
+{% block content_shell_style %}max-width: min(100%, 34rem);{% endblock %}
+
+{% block content %}
+<div class="w-100 mx-auto">
+    <div class="text-center mb-4 mb-md-5">
+        <h1 class="fw-bold text-dark mb-2 fs-4 fs-md-3">Smart Crop Management System</h1>
+        <p class="text-muted small mb-0 px-2">Message</p>
+    </div>
+
+    <div class="alert alert-info mb-4" role="alert">
+        {{ message }}
+    </div>
+
+    <div class="d-grid gap-2 d-md-block">
+        <a
+            href="{% if id %}{% url redirect id %}{% else %}{% url redirect %}{% endif %}"
+            class="btn btn-success btn-lg px-md-5 w-100 w-md-auto text-decoration-none"
+        >
+            Continue
+        </a>
+    </div>
+</div>
+{% endblock %}

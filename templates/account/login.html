@@ -1,0 +1,103 @@
+{% extends "background.html" %}
+
+{% block title %}Login - Smart Crop Management{% endblock %}
+
+{# 登录页：收紧整条内容区宽度，白卡片与表单比例协调（不受仪表盘 1600px 影响） #}
+{% block content_shell_class %}position-relative px-3 px-sm-4 mx-auto w-100{% endblock %}
+{% block content_shell_style %}max-width: min(100%, 34rem);{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="text-center mb-4 mb-md-5">
+                <h1 class="fw-bold text-success-emphasis mb-2">Smart Crop Management</h1>
+                <p class="text-secondary mb-0">Sign in to manage crops, monitor fields, and track insights.</p>
+            </div>
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label for="username" class="form-label fw-semibold">Username</label>
+                    <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            class="form-control form-control-lg{% if error_messages.username %} is-invalid{% endif %}"
+                            value="{% if username %}{{ username }}{% endif %}"
+                            placeholder="Example: lewwinhow"
+                            autocomplete="username"
+                            {% if error_messages.username %}aria-describedby="username-error" aria-invalid="true"{% endif %}
+                    >
+                    {% if error_messages.username %}
+                        <div id="username-error" class="invalid-feedback d-block" role="alert">
+                            {{ error_messages.username }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-2">
+                    <label for="password" class="form-label fw-semibold">Password</label>
+                    <div class="input-group input-group-lg has-validation">
+                        <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                class="form-control{% if error_messages.password %} is-invalid{% endif %}"
+                                value="{% if password %}{{ password }}{% endif %}"
+                                placeholder="Example: (XiaoHao6070)"
+                                autocomplete="current-password"
+                                {% if error_messages.password %}aria-describedby="password-error" aria-invalid="true"{% endif %}
+                        >
+                        <button
+                                class="btn btn-outline-secondary"
+                                type="button"
+                                id="togglePassword"
+                                aria-label="Toggle password visibility"
+                                title="Show password"
+                        >
+                            <span id="togglePasswordIcon" aria-hidden="true">👁️</span>
+                        </button>
+                    </div>
+                    {% if error_messages.password %}
+                        <div id="password-error" class="invalid-feedback d-block mt-1" role="alert">
+                            {{ error_messages.password }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="d-flex justify-content-end mb-4">
+                    <a href="#" class="small text-decoration-none">Forgot password?</a>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-success btn-lg py-2 fw-semibold">
+                        Login
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    {{ block.super }}
+    <script>
+        (function () {
+            var passwordInput = document.getElementById('password');
+            var toggleBtn = document.getElementById('togglePassword');
+            var icon = document.getElementById('togglePasswordIcon');
+
+            if (passwordInput && toggleBtn) {
+                toggleBtn.addEventListener('click', function () {
+                    var isPassword = passwordInput.getAttribute('type') === 'password';
+                    passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+                    if (icon) {
+                        icon.textContent = isPassword ? '🙈' : '👁️';
+                    }
+                    toggleBtn.setAttribute('title', isPassword ? 'Hide password' : 'Show password');
+                });
+            }
+        })();
+    </script>
+{% endblock %}

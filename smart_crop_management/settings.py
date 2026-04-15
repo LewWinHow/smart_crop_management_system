@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'account',
+    'employee',
+    'login_log'
 ]
 
 MIDDLEWARE = [
@@ -73,13 +76,26 @@ WSGI_APPLICATION = 'smart_crop_management.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.mysql",
+#         "NAME": "smart_port_management",
+#         "HOST": "127.0.0.1",
+#         "PORT": "3306",
+#         "USER": "root",
+#         "PASSWORD": "985110",
+#         "POOL_OPTIONS": {
+#             "POOL_SIZE": 10,
+#             "MAX_OVERFLOW": 30,
+#         },
+#     }
+# }
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -121,3 +137,16 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+AUTH_USER_MODEL = 'employee.Employee'
+
+LOGIN_URL = '/account/login/'
+
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "xiaohao6070@gmail.com"
+EMAIL_HOST_PASSWORD = "kzaj zvse grwo hvvr"
