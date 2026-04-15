@@ -31,8 +31,8 @@ class SupervisorRequiredMixin(UserPassesTestMixin):
 
 
 class EmployeeFormMixin:
-    permission_choices = Employee.permission
-    gender_choices = [('', '-'), ('1', 'Male'), ('2', 'Female')]
+    permission_options = [(1, 'Supervisor'), (2, 'Administrator'), (3, 'Viewer')]
+    gender_options = [('', '-'), ('1', 'Male'), ('2', 'Female')]
 
     def get_employee_values(self, employee=None, data=None, include_username=False, include_password=False):
         if data is not None:
@@ -129,7 +129,7 @@ class EmployeeFormMixin:
             except ValueError:
                 error_messages['age'] = 'Age must be a number.'
 
-        if values['permission'] not in {str(key) for key, _ in self.permission_choices}:
+        if values['permission'] not in {str(key) for key, _ in self.permission_options}:
             error_messages['permission'] = 'Permission is invalid.'
 
         if values['gender'] not in {'', '1', '2'}:
@@ -179,8 +179,8 @@ class EditEmployee(LoginRequiredMixin, SupervisorRequiredMixin, EmployeeFormMixi
             {
                 'employee': employee,
                 'values': self.get_employee_values(employee),
-                'permission_choices': self.permission_choices,
-                'gender_choices': self.gender_choices,
+                'permission_choices': self.permission_options,
+                'gender_choices': self.gender_options,
                 'error_messages': {},
             },
         )
@@ -199,8 +199,8 @@ class EditEmployee(LoginRequiredMixin, SupervisorRequiredMixin, EmployeeFormMixi
                 {
                     'employee': employee,
                     'values': values,
-                    'permission_choices': self.permission_choices,
-                    'gender_choices': self.gender_choices,
+                    'permission_choices': self.permission_options,
+                    'gender_choices': self.gender_options,
                     'error_messages': error_messages,
                 },
             )
@@ -249,8 +249,8 @@ class AddEmployee(LoginRequiredMixin, SupervisorRequiredMixin, EmployeeFormMixin
             'employee/add_employee.html',
             {
                 'values': self.get_employee_values(include_username=True, include_password=True),
-                'permission_choices': self.permission_choices,
-                'gender_choices': self.gender_choices,
+                'permission_choices': self.permission_options,
+                'gender_choices': self.gender_options,
                 'error_messages': {},
             },
         )
@@ -271,8 +271,8 @@ class AddEmployee(LoginRequiredMixin, SupervisorRequiredMixin, EmployeeFormMixin
                 'employee/add_employee.html',
                 {
                     'values': values,
-                    'permission_choices': self.permission_choices,
-                    'gender_choices': self.gender_choices,
+                    'permission_choices': self.permission_options,
+                    'gender_choices': self.gender_options,
                     'error_messages': error_messages,
                 },
             )
@@ -300,8 +300,8 @@ class GetMyInformation(LoginRequiredMixin, EmployeeFormMixin, View):
             {
                 'employee': employee,
                 'values': self.get_employee_values(employee, include_username=True),
-                'permission_choices': self.permission_choices,
-                'gender_choices': self.gender_choices,
+                'permission_choices': self.permission_options,
+                'gender_choices': self.gender_options,
                 'error_messages': {},
             },
         )
@@ -325,8 +325,8 @@ class GetMyInformation(LoginRequiredMixin, EmployeeFormMixin, View):
                 {
                     'employee': employee,
                     'values': values,
-                    'permission_choices': self.permission_choices,
-                    'gender_choices': self.gender_choices,
+                    'permission_choices': self.permission_options,
+                    'gender_choices': self.gender_options,
                     'error_messages': error_messages,
                 },
             )
