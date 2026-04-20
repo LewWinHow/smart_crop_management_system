@@ -1,0 +1,118 @@
+{% extends "navigation_bar.html" %}
+
+{% block title %}Login IP - Smart Crop Management{% endblock %}
+
+{% block page_content %}
+<div class="row justify-content-center">
+    <div class="col-12">
+        <div class="mb-4">
+            <h2 class="fw-bold text-success-emphasis mb-1">Login IP</h2>
+            <p class="text-secondary mb-0">Review login source devices, failed attempts, and blacklist status.</p>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post" class="card border-success-subtle shadow-sm mb-4">
+            <div class="card-body p-3 p-md-4">
+                {% csrf_token %}
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold" for="id_filter_select">Filter</label>
+                        <select id="id_filter_select" name="filter_select" class="form-select">
+                            <option value="1" {% if filter_select == '1' %}selected{% endif %}>All records</option>
+                            <option value="2" {% if filter_select == '2' %}selected{% endif %}>By ID</option>
+                            <option value="3" {% if filter_select == '3' %}selected{% endif %}>By blacklist status</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold" for="id_filter_input">Record ID</label>
+                        <input type="text" id="id_filter_input" name="filter_input" class="form-control" value="{{ filter_input }}" placeholder="Example: 12">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold" for="id_blacklist_select">Blacklist</label>
+                        <select id="id_blacklist_select" name="blacklist_select" class="form-select">
+                            <option value="" {% if blacklist_select == '' %}selected{% endif %}>All</option>
+                            <option value="1" {% if blacklist_select == '1' %}selected{% endif %}>Blacklisted</option>
+                            <option value="0" {% if blacklist_select == '0' %}selected{% endif %}>Not blacklisted</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold" for="id_order_by">Order</label>
+                        <select id="id_order_by" name="order_by" class="form-select">
+                            <option value="0" {% if order_by == '0' %}selected{% endif %}>Newest first</option>
+                            <option value="1" {% if order_by == '1' %}selected{% endif %}>Oldest first</option>
+                        </select>
+                    </div>
+                    <div class="col-12 d-flex gap-2 justify-content-end">
+                        <a href="{% url 'login_log:login_ip' %}" class="btn btn-outline-secondary">Reset</a>
+                        <button type="submit" class="btn btn-success">Apply</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="card border-success-subtle shadow-sm overflow-hidden">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>IP</th>
+                            <th>System</th>
+                            <th>Device</th>
+                            <th>Browser</th>
+                            <th>Bot</th>
+                            <th>Failed</th>
+                            <th>Blacklist</th>
+                            <th>Created</th>
+                            <th>Updated</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in login_ip_list %}
+                            <tr>
+                                <td>{{ item.id }}</td>
+                                <td><code>{{ item.ip }}</code></td>
+                                <td>{{ item.system }}</td>
+                                <td>{{ item.device }}</td>
+                                <td>{{ item.browser }}</td>
+                                <td>{% if item.is_bot %}<span class="badge bg-warning text-dark">Bot</span>{% else %}<span class="badge bg-light text-dark border">No</span>{% endif %}</td>
+                                <td>{{ item.failed_count }}</td>
+                                <td>{% if item.is_blacklist %}<span class="badge bg-danger">Blacklisted</span>{% else %}<span class="badge bg-success">Allowed</span>{% endif %}</td>
+                                <td>{{ item.created_time|date:"Y-m-d H:i" }}</td>
+                                <td>{{ item.updated_time|date:"Y-m-d H:i" }}</td>
+                                <td class="text-end">
+                                    <div class="d-inline-flex gap-2">
+                                        <form method="post" action="{% url 'login_log:blacklist_ip' item.id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-outline-warning">
+                                                {% if item.is_blacklist %}Unblacklist{% else %}Blacklist{% endif %}
+                                            </button>
+                                        </form>
+                                        <form method="post" action="{% url 'login_log:delete_login_ip' item.id %}" onsubmit="return confirm('Delete login IP record {{ item.id }}?');">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="11" class="text-center text-muted py-4">No login IP data available.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -87,6 +87,24 @@
             <span class="me-2" aria-hidden="true">&#128100;</span>
             <span>Your Information</span>
         </a>
+
+        {% if request.user.is_superuser %}
+        <div class="small text-uppercase text-secondary fw-semibold mt-2">Security</div>
+        <a
+            class="btn sidebar-nav-link d-flex align-items-center text-start fw-semibold rounded-3 py-2 {% if current_view == 'login_log:login_ip' or current_view == 'login_log:login_ip_page' %}is-active{% else %}btn-outline-success{% endif %}"
+            href="{% url 'login_log:login_ip' %}"
+        >
+            <span class="me-2" aria-hidden="true">&#128187;</span>
+            <span>Login IP</span>
+        </a>
+        <a
+            class="btn sidebar-nav-link d-flex align-items-center text-start fw-semibold rounded-3 py-2 {% if current_view == 'login_log:login_record' or current_view == 'login_log:login_record_page' %}is-active{% else %}btn-outline-success{% endif %}"
+            href="{% url 'login_log:login_record' %}"
+        >
+            <span class="me-2" aria-hidden="true">&#128221;</span>
+            <span>Login Record</span>
+        </a>
+        {% endif %}
         {% endwith %}
 
         <div class="mt-auto pt-2">

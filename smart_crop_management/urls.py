@@ -26,6 +26,7 @@ urlpatterns = [
     path('', RedirectView.as_view(url='/account/login/', permanent=False)),
     path('monitoring/', include('monitoring.urls')),
     path('employee/', include('employee.urls')),
+    path('login_log/', include('login_log.urls')),
 ]
 
 if settings.DEBUG:
