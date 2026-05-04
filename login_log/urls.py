@@ -1,15 +1,18 @@
 from django.urls import path
-
-from login_log.views import DeleteLoginIP, DeleteLoginRecord, IPBlacklist, IPOfLogin, RecordOfLogin
+from login_log import views
+from login_log.views import *
 
 app_name = 'login_log'
 
 urlpatterns = [
-    path('login_ip/', IPOfLogin.as_view(), name='login_ip'),
-    path('login_ip/<int:page>/', IPOfLogin.as_view(), name='login_ip_page'),
-    path('login_record/', RecordOfLogin.as_view(), name='login_record'),
-    path('login_record/<int:page>/', RecordOfLogin.as_view(), name='login_record_page'),
-    path('blacklist_ip/<int:id>/', IPBlacklist.as_view(), name='blacklist_ip'),
-    path('delete_login_ip/<int:id>/', DeleteLoginIP.as_view(), name='delete_login_ip'),
-    path('delete_login_record/<int:id>/', DeleteLoginRecord.as_view(), name='delete_login_record'),
+    path('get_all_login_ip/', GetAllLoginIP.as_view(), name='get_all_login_ip'),
+    path('get_all_login_ip/<int:page>', GetAllLoginIP.as_view(), name='get_all_login_ip'),
+
+    path('get_all_login_record/', GetAllLoginRecord.as_view(), name='get_all_login_record'),
+    path('get_all_login_record/<int:page>', GetAllLoginRecord.as_view(), name='get_all_login_record'),
+
+    path('toggle_ip_status/<int:id>', ToggleLoginIPStatus.as_view(), name='toggle_ip_status'),
+
+    path('delete_login_ip/<int:id>', DeleteLoginIP.as_view(), name='delete_login_ip'),
+    path('delete_login_record/<int:id>', DeleteLoginRecord.as_view(), name='delete_login_record'),
 ]

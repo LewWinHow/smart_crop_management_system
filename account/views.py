@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 
 from login_log.models import LoginIP, LoginRecord
@@ -49,19 +49,11 @@ class Login(View):
         username = request.POST.get('username') or None
         password = request.POST.get('password') or None
 
-        error_messages = {}
+        if verify_username(username, request, 'account:login') != True:
+            return verify_username(username, request, 'account:login')
 
-        error_message_username = verify_username(username)
-        if error_message_username != True:
-            error_messages['username'] = error_message_username
-
-        error_message_password = verify_password(password)
-        if error_message_password != True:
-            error_messages['password'] = error_message_password
-            print(error_messages['password'])
-
-        if error_messages:
-            return render(request, 'account/login.html', {'username': username, 'password': password, 'error_messages': error_messages})
+        if verify_password(password, request, 'account:login') != True:
+            return verify_password(password, request, 'account:login')
 
         employee = authenticate(request, username=username, password=password)
 
@@ -97,6 +89,7 @@ class Login(View):
             return hint_message(
                 request, 'Login failed!', 'account:login'
             )
+
 
 class Logout(View):
     def get(self, request):

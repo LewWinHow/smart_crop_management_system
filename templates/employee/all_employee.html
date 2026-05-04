@@ -7,26 +7,25 @@
         <div class="col-12">
             <div class="mb-4 d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
                 <div class="text-center text-md-start">
-                    <h2 class="fw-bold text-success-emphasis mb-2">All Employees</h2>
-                    <p class="text-secondary mb-0">
-                        All <code class="small">AbstractUser</code> and <code class="small">Employee</code> model fields:
-                        identity, security flags, timestamps, permission, profile, and contact.
-                    </p>
+                    <h2 class="fw-bold text-success-emphasis mb-2">All Employee</h2>
                 </div>
-                {% if permission == 1 %}
+                <form method="get" class="d-inline-flex flex-nowrap align-items-center gap-2 mb-0">
+                    <label for="id_order_by" class="form-label mb-0 small text-muted text-nowrap">Order by</label>
+                    <select id="id_order_by" name="order_by" class="form-select form-select-sm w-auto"
+                            style="min-width: 9.5rem;"
+                            onchange="this.form.submit()">
+                        <option value="0" {% if order_by == '0' %}selected{% endif %}>Newest first</option>
+                        <option value="1" {% if order_by == '1' %}selected{% endif %}>Oldest first</option>
+                    </select>
+                </form>
+            </div>
+
+            {% if permission == 1 %}
+                <div class="mb-3 text-start">
                     <a href="{% url 'employee:add_employee' %}" class="btn btn-success fw-semibold">
                         + Add employee
                     </a>
-                {% endif %}
-            </div>
-
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{% if message.tags == 'error' %}danger{% elif message.tags == 'debug' %}secondary{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
+                </div>
             {% endif %}
 
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-3 row-cols-xxl-4 g-3 g-lg-4">
@@ -41,7 +40,8 @@
                                     <img src="{{ employee.profile_image.url }}" class="w-100 d-block" alt="Profile"
                                          style="height: 150px; object-fit: contain; background-color: #f8f9fa;">
                                 </button>
-                                <p class="small text-muted text-center mb-0 py-2 border-bottom border-success-subtle bg-light bg-opacity-50">Click photo to enlarge</p>
+                                <p class="small text-muted text-center mb-0 py-2 border-bottom border-success-subtle bg-light bg-opacity-50">
+                                    Click image to enlarge</p>
                             {% endif %}
                             <div class="card-body d-flex flex-column">
                                 <div class="d-flex align-items-start gap-2 mb-2">
@@ -62,11 +62,7 @@
                                 </div>
 
                                 <div class="d-flex flex-wrap gap-2 mb-3">
-                                    {% if employee.is_active %}
-                                        <span class="badge bg-success rounded-pill px-3 py-1 small fw-semibold shadow-sm">Active</span>
-                                    {% else %}
-                                        <span class="badge bg-secondary rounded-pill px-3 py-1 small fw-semibold shadow-sm">Inactive</span>
-                                    {% endif %}
+
 
                                     {% if employee.is_superuser %}
                                         <span class="badge bg-warning text-dark">Superuser</span>
@@ -87,6 +83,12 @@
                                     {% else %}
                                         <span class="badge bg-light text-dark border">Non-staff</span>
                                     {% endif %}
+
+                                    {% if employee.is_active %}
+                                        <span class="badge bg-success rounded-pill px-3 py-1 small fw-semibold shadow-sm">Active</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary rounded-pill px-3 py-1 small fw-semibold shadow-sm">Inactive</span>
+                                    {% endif %}
                                 </div>
 
                                 <div class="small">
@@ -95,6 +97,11 @@
                                         <dd class="col-7 mb-0 text-break">{{ employee.email|default:"-" }}</dd>
                                         <dt class="col-5 text-muted fw-normal mb-0">Phone</dt>
                                         <dd class="col-7 mb-0">{{ employee.phone|default:"-" }}</dd>
+
+                                        <dt class="col-5 text-muted fw-normal mb-0">Birth date</dt>
+                                        <dd class="col-7 mb-0">
+                                            {% if employee.birth_date %}{{ employee.birth_date|date:"Y-m-d" }}{% else %}
+                                                -{% endif %}</dd>
 
                                         <dt class="col-5 text-muted fw-normal mb-0">Age</dt>
                                         <dd class="col-7 mb-0">
@@ -108,10 +115,6 @@
                                             {% else %}-{% endif %}
                                         </dd>
 
-                                        <dt class="col-5 text-muted fw-normal mb-0">Birth date</dt>
-                                        <dd class="col-7 mb-0">
-                                            {% if employee.birth_date %}{{ employee.birth_date|date:"Y-m-d" }}{% else %}
-                                                -{% endif %}</dd>
 
                                         <dt class="col-5 text-muted fw-normal mb-0">Last login</dt>
                                         <dd class="col-7 mb-0">{% if employee.last_login %}
@@ -130,27 +133,20 @@
                             {% if permission == 1 %}
                                 <div class="card-footer bg-transparent border-top border-success-subtle py-3 px-3">
                                     <div class="d-flex gap-2">
-                                        <a href="{% url 'employee:edit_employee' employee.id %}" class="btn btn-outline-primary btn-sm fw-semibold flex-fill">
+                                        <a href="{% url 'employee:edit_employee' employee.id %}"
+                                           class="btn btn-outline-primary btn-sm fw-semibold flex-fill">
                                             Edit
                                         </a>
-                                        <form method="post"
-                                              action="{% url 'employee:toggle_employee_active' employee.id %}"
-                                              class="flex-fill"
-                                              onsubmit="return confirm('Are you sure {% if employee.is_active %}disable{% else %}enable{% endif %} this employee?')">
-                                            {% csrf_token %}
-                                            <button type="submit" class="btn btn-outline-warning btn-sm fw-semibold w-100">
-                                                {% if employee.is_active %}Disable{% else %}Enable{% endif %}
-                                            </button>
-                                        </form>
-                                        <form
-                                            method="post"
-                                            action="{% url 'employee:delete_employee' employee.id %}"
-                                            class="flex-fill"
-                                            onsubmit="return confirm('Delete employee {{ employee.username|escapejs }}? This cannot be undone.');"
-                                        >
-                                            {% csrf_token %}
-                                            <button type="submit" class="btn btn-outline-danger btn-sm fw-semibold w-100">Delete</button>
-                                        </form>
+                                        <a href="{% url 'employee:toggle_employee_active' employee.id %}"
+                                           class="btn btn-outline-warning btn-sm fw-semibold flex-fill"
+                                           onclick="return confirm('{% if employee.is_active %}Disable{% else %}Enable{% endif %} this employee {{ employee.username|escapejs }}?')">
+                                            {% if employee.is_active %}Disable{% else %}Enable{% endif %}
+                                        </a>
+                                        <a href="{% url 'employee:delete_employee' employee.id %}"
+                                           class="btn btn-outline-danger btn-sm fw-semibold flex-fill"
+                                           onclick="return confirm('Delete this employee {{ employee.username|escapejs }}?');">
+                                            Delete
+                                        </a>
                                     </div>
                                 </div>
                             {% endif %}
@@ -164,6 +160,41 @@
                     </div>
                 {% endfor %}
             </div>
+
+            <div class="mt-4 d-flex flex-column align-items-center gap-2 text-center">
+                <nav aria-label="Employee pagination">
+                    <ul class="pagination pagination-sm mb-0 shadow-sm">
+                        <li class="page-item {% if not employees.has_previous %}disabled{% endif %}">
+                            <a class="page-link rounded-start-3 px-3 border-success-subtle text-success-emphasis"
+                               href="{% if employees.has_previous %}{% url 'employee:get_all_employee' employees.previous_page_number %}{% else %}{% url 'employee:get_all_employee' %}{% endif %}?order_by={{ order_by|default:'' }}">
+                                <span aria-hidden="true">&laquo;</span>
+                                <span class="ms-1">Previous</span>
+                            </a>
+                        </li>
+
+                        {% for page_num in employees.paginator.page_range %}
+                            <li class="page-item">
+                                <a class="page-link px-3 border-success-subtle {% if employees.number == page_num %}bg-success border-success text-white fw-semibold{% else %}text-success-emphasis{% endif %}"
+                                   href="{% if page_num == 1 %}{% url 'employee:get_all_employee' %}{% else %}{% url 'employee:get_all_employee' page_num %}{% endif %}?order_by={{ order_by|default:'' }}"
+                                   {% if employees.number == page_num %}aria-current="page"{% endif %}>
+                                    {{ page_num }}
+                                </a>
+                            </li>
+                        {% endfor %}
+
+                        <li class="page-item {% if not employees.has_next %}disabled{% endif %}">
+                            <a class="page-link rounded-end-3 px-3 border-success-subtle text-success-emphasis"
+                               href="{% if employees.has_next %}{% url 'employee:get_all_employee' employees.next_page_number %}{% else %}{% url 'employee:get_all_employee' employees.paginator.num_pages %}{% endif %}?order_by={{ order_by|default:'' }}">
+                                <span class="me-1">Next</span>
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <p class="mb-0 small text-muted">
+                    Page {{ employees.number }} of {{ employees.paginator.num_pages }}
+                </p>
+            </div>
         </div>
     </div>
 {% endblock %}
@@ -174,12 +205,15 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: min(92vw, 900px);">
             <div class="modal-content rounded-4 border border-success-subtle shadow">
                 <div class="modal-header border-bottom border-success-subtle py-3">
-                    <h2 class="modal-title fw-bold text-success-emphasis fs-5 mb-0" id="imageModalLabel">Profile photo</h2>
+                    <h2 class="modal-title fw-bold text-success-emphasis fs-5 mb-0" id="imageModalLabel">Profile
+                        image</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body text-center p-3 p-md-3 bg-light" data-bs-dismiss="modal" role="button" tabindex="0" aria-label="Close preview">
+                <div class="modal-body text-center p-3 p-md-3 bg-light" data-bs-dismiss="modal" role="button"
+                     tabindex="0" aria-label="Close preview">
                     <p class="small text-secondary mb-2">Click the image or close to return.</p>
-                    <img id="modalImage" src="" alt="Enlarged profile image" class="img-fluid rounded-3 border bg-white" style="max-height: min(70vh, 780px); width: auto;">
+                    <img id="modalImage" src="" alt="Enlarged profile image" class="img-fluid rounded-3 border bg-white"
+                         style="max-height: min(70vh, 780px); width: auto;">
                 </div>
             </div>
         </div>

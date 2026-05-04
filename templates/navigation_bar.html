@@ -4,142 +4,126 @@
 
 {% block content_wrapper_class %}layout-fullbleed{% endblock %}
 
+{% block extra_head %}
+    {{ block.super }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+{% endblock %}
+
 {% block content %}
-<style>
-    .sidebar-nav-link {
-        border-width: 1px;
-        transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-    }
+    <button
+            id="sidebarToggleBtn"
+            class="btn btn-success position-fixed top-0 start-0 m-3 rounded-pill shadow d-inline-flex align-items-center gap-2 px-3 py-2"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#sidebarOffcanvas"
+            aria-controls="sidebarOffcanvas"
+            style="z-index: 1050;"
+            aria-label="Open menu"
+    >
+        <i class="bi bi-list fs-5" aria-hidden="true"></i>
+        <span>Menu</span>
+    </button>
 
-    .sidebar-nav-link.is-active {
-        background: linear-gradient(135deg, #198754, #157347);
-        border-color: #157347;
-        color: #fff;
-        box-shadow: 0 0.5rem 1rem rgba(25, 135, 84, 0.2);
-    }
+    <div
+            class="offcanvas offcanvas-start border-end border-success-subtle"
+            tabindex="-1"
+            id="sidebarOffcanvas"
+            aria-labelledby="sidebarOffcanvasLabel"
+            style="--bs-offcanvas-width: min(300px, 100vw);"
+    >
+        <div class="offcanvas-header border-bottom border-success-subtle py-3">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-flower1 text-success fs-3" aria-hidden="true"></i>
+                <div>
+                    <h5 class="mb-0 fw-bold text-dark" id="sidebarOffcanvasLabel">
+                        {% if request.user.permission == 1 %}Supervisor{% elif request.user.permission == 2 %}Administrator{% else %}Viewer{% endif %} Dashboard
+                    </h5>
+                    <small class="text-muted">Smart Crop Management System</small>
+                </div>
+            </div>
+        </div>
 
-    .sidebar-nav-link.is-active:hover,
-    .sidebar-nav-link.is-active:focus {
-        color: #fff;
-        background: linear-gradient(135deg, #198754, #146c43);
-        border-color: #146c43;
-    }
-</style>
+        <div class="offcanvas-body p-3 d-flex flex-column">
+            {% with current_view=request.resolver_match.view_name %}
+                <nav class="nav nav-pills flex-column gap-2">
+                    <a
+                            class="nav-link d-flex align-items-center gap-2 border rounded-3 px-3 py-2 {% if current_view == 'monitoring:get_crop_zone_data' %}active bg-success border-success{% else %}text-success-emphasis border-success-subtle bg-white{% endif %}"
+                            href="{% url 'monitoring:get_crop_zone_data' %}"
+                    >
+                        <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
+                        <span>Oil Palm Tree Monitoring</span>
+                    </a>
 
-<button
-    id="sidebarToggleBtn"
-    class="btn btn-success position-fixed top-0 start-0 m-3 rounded-pill border-0 shadow d-inline-flex align-items-center gap-2 px-3 py-2"
-    type="button"
-    data-bs-toggle="offcanvas"
-    data-bs-target="#sidebarOffcanvas"
-    aria-controls="sidebarOffcanvas"
-    style="z-index: 1050;"
-    aria-label="Open menu"
->
-    <span aria-hidden="true">&#9776;</span>
-    <span>Menu</span>
-</button>
+                    {% if request.user.is_superuser %}
+                        <a
+                                class="nav-link d-flex align-items-center gap-2 border rounded-3 px-3 py-2 {% if current_view == 'login_log:get_all_login_ip' or current_view == 'login_log:login_ip_page' %}active bg-success border-success{% else %}text-success-emphasis border-success-subtle bg-white{% endif %}"
+                                href="{% url 'login_log:get_all_login_ip' %}"
+                        >
+                            <i class="bi bi-shield-check" aria-hidden="true"></i>
+                            <span>All Login IP</span>
+                        </a>
 
-<div
-    class="offcanvas offcanvas-start bg-white border-end border-success-subtle"
-    tabindex="-1"
-    id="sidebarOffcanvas"
-    aria-labelledby="sidebarOffcanvasLabel"
-    style="--bs-offcanvas-width: min(280px, 100vw);"
->
-    <div class="offcanvas-header border-bottom border-success-subtle py-3">
-        <div class="d-flex align-items-center flex-grow-1 me-2">
-            <span class="fs-3 me-2" aria-hidden="true">&#127806;</span>
-            <div>
-                <p class="text-success fw-semibold mb-0 small text-uppercase">Smart Crop</p>
-                <h5 class="mb-0 fw-bold text-dark" id="sidebarOffcanvasLabel">
-                    Dashboard
-                </h5>
-                <small class="text-muted">Smart Crop Management System</small>
+                        <a
+                                class="nav-link d-flex align-items-center gap-2 border rounded-3 px-3 py-2 {% if current_view == 'login_log:get_all_login_record' or current_view == 'login_log:login_record_page' %}active bg-success border-success{% else %}text-success-emphasis border-success-subtle bg-white{% endif %}"
+                                href="{% url 'login_log:get_all_login_record' %}"
+                        >
+                            <i class="bi bi-clipboard-data" aria-hidden="true"></i>
+                            <span>All Login Record</span>
+                        </a>
+                    {% endif %}
+
+                    <a
+                            class="nav-link d-flex align-items-center gap-2 border rounded-3 px-3 py-2 {% if current_view == 'employee:get_all_employee' or current_view == 'employee:add_employee' or current_view == 'employee:edit_employee' %}active bg-success border-success{% else %}text-success-emphasis border-success-subtle bg-white{% endif %}"
+                            href="{% url 'employee:get_all_employee' %}"
+                    >
+                        <i class="bi bi-people" aria-hidden="true"></i>
+                        <span>All Employee</span>
+                    </a>
+
+                    <a
+                            class="nav-link d-flex align-items-center gap-2 border rounded-3 px-3 py-2 {% if current_view == 'employee:get_your_information' %}active bg-success border-success{% else %}text-success-emphasis border-success-subtle bg-white{% endif %}"
+                            href="{% url 'employee:get_your_information' %}"
+                    >
+                        <i class="bi bi-person-vcard" aria-hidden="true"></i>
+                        <span>Your Information</span>
+                    </a>
+                </nav>
+            {% endwith %}
+
+            <div class="mt-auto pt-3">
+                <a class="btn btn-outline-danger w-100 d-inline-flex align-items-center justify-content-center gap-2 rounded-3"
+                   href="{% url 'account:logout' %}">
+                    <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
+                    <span>Logout</span>
+                </a>
             </div>
         </div>
     </div>
-    <div class="offcanvas-body p-3 d-flex flex-column gap-2">
-        {% with current_view=request.resolver_match.view_name %}
-        <div class="small text-uppercase text-secondary fw-semibold mt-1">Monitoring</div>
-        <a
-            class="btn sidebar-nav-link d-flex align-items-center text-start fw-semibold rounded-3 py-2 {% if current_view == 'monitoring:get_crop_zone_data' %}is-active{% else %}btn-outline-success{% endif %}"
-            href="{% url 'monitoring:get_crop_zone_data' %}"
-        >
-            <span class="me-2" aria-hidden="true">&#128202;</span>
-            <span>Monitoring</span>
-        </a>
 
-        <div class="small text-uppercase text-secondary fw-semibold mt-2">Person</div>
-        <a
-            class="btn sidebar-nav-link d-flex align-items-center text-start fw-semibold rounded-3 py-2 {% if current_view == 'employee:get_all_employee' or current_view == 'employee:add_employee' or current_view == 'employee:edit_employee' %}is-active{% else %}btn-outline-success{% endif %}"
-            href="{% url 'employee:get_all_employee' %}"
-        >
-            <span class="me-2" aria-hidden="true">&#128100;</span>
-            <span>All Employee</span>
-        </a>
-
-        <div class="small text-uppercase text-secondary fw-semibold mt-2">Account</div>
-        <a
-            class="btn sidebar-nav-link d-flex align-items-center text-start fw-semibold rounded-3 py-2 {% if current_view == 'employee:get_my_information' %}is-active{% else %}btn-outline-success{% endif %}"
-            href="{% url 'employee:get_my_information' %}"
-        >
-            <span class="me-2" aria-hidden="true">&#128100;</span>
-            <span>Your Information</span>
-        </a>
-
-        {% if request.user.is_superuser %}
-        <div class="small text-uppercase text-secondary fw-semibold mt-2">Security</div>
-        <a
-            class="btn sidebar-nav-link d-flex align-items-center text-start fw-semibold rounded-3 py-2 {% if current_view == 'login_log:login_ip' or current_view == 'login_log:login_ip_page' %}is-active{% else %}btn-outline-success{% endif %}"
-            href="{% url 'login_log:login_ip' %}"
-        >
-            <span class="me-2" aria-hidden="true">&#128187;</span>
-            <span>Login IP</span>
-        </a>
-        <a
-            class="btn sidebar-nav-link d-flex align-items-center text-start fw-semibold rounded-3 py-2 {% if current_view == 'login_log:login_record' or current_view == 'login_log:login_record_page' %}is-active{% else %}btn-outline-success{% endif %}"
-            href="{% url 'login_log:login_record' %}"
-        >
-            <span class="me-2" aria-hidden="true">&#128221;</span>
-            <span>Login Record</span>
-        </a>
-        {% endif %}
-        {% endwith %}
-
-        <div class="mt-auto pt-2">
-            <a class="btn btn-outline-danger d-flex align-items-center text-start fw-semibold rounded-3 py-2 w-100" href="{% url 'account:logout' %}">
-                <span class="me-2" aria-hidden="true">&#128682;</span>
-                <span>Logout</span>
-            </a>
+    <div class="container-fluid position-relative px-3 px-md-4" style="z-index: 10;">
+        <div class="pt-5 pt-md-4 pb-4">
+            <div class="bg-white bg-opacity-75 border rounded-4 shadow-sm p-3 p-md-4 w-100">
+                {% block page_content %}
+                {% endblock %}
+            </div>
         </div>
     </div>
-</div>
-
-<div class="container-fluid position-relative px-3 px-md-4" style="z-index: 10;">
-    <div class="pt-5 pt-md-4 pb-4">
-        <div class="bg-white bg-opacity-75 border rounded-4 shadow-sm p-3 p-md-4 w-100">
-            {% block page_content %}
-            {% endblock %}
-        </div>
-    </div>
-</div>
 {% endblock %}
 
 {% block extra_js %}
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    var offcanvasElement = document.getElementById('sidebarOffcanvas');
-    var toggleButton = document.getElementById('sidebarToggleBtn');
-    if (!offcanvasElement || !toggleButton) {
-        return;
-    }
-    offcanvasElement.addEventListener('show.bs.offcanvas', function () {
-        toggleButton.classList.add('d-none');
-    });
-    offcanvasElement.addEventListener('hidden.bs.offcanvas', function () {
-        toggleButton.classList.remove('d-none');
-    });
-});
-</script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var offcanvasElement = document.getElementById('sidebarOffcanvas');
+            var toggleButton = document.getElementById('sidebarToggleBtn');
+            if (!offcanvasElement || !toggleButton) {
+                return;
+            }
+            offcanvasElement.addEventListener('show.bs.offcanvas', function () {
+                toggleButton.classList.add('d-none');
+            });
+            offcanvasElement.addEventListener('hidden.bs.offcanvas', function () {
+                toggleButton.classList.remove('d-none');
+            });
+        });
+    </script>
 {% endblock %}

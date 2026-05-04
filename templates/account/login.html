@@ -23,17 +23,9 @@
                             type="text"
                             id="username"
                             name="username"
-                            class="form-control form-control-lg{% if error_messages.username %} is-invalid{% endif %}"
-                            value="{% if username %}{{ username }}{% endif %}"
+                            class="form-control form-control-lg"
                             placeholder="Example: lewwinhow"
-                            autocomplete="username"
-                            {% if error_messages.username %}aria-describedby="username-error" aria-invalid="true"{% endif %}
                     >
-                    {% if error_messages.username %}
-                        <div id="username-error" class="invalid-feedback d-block" role="alert">
-                            {{ error_messages.username }}
-                        </div>
-                    {% endif %}
                 </div>
 
                 <div class="mb-2">
@@ -43,11 +35,8 @@
                                 type="password"
                                 id="password"
                                 name="password"
-                                class="form-control{% if error_messages.password %} is-invalid{% endif %}"
-                                value="{% if password %}{{ password }}{% endif %}"
+                                class="form-control"
                                 placeholder="Example: (XiaoHao6070)"
-                                autocomplete="current-password"
-                                {% if error_messages.password %}aria-describedby="password-error" aria-invalid="true"{% endif %}
                         >
                         <button
                                 class="btn btn-outline-secondary"
@@ -59,11 +48,6 @@
                             <span id="togglePasswordIcon" aria-hidden="true">👁️</span>
                         </button>
                     </div>
-                    {% if error_messages.password %}
-                        <div id="password-error" class="invalid-feedback d-block mt-1" role="alert">
-                            {{ error_messages.password }}
-                        </div>
-                    {% endif %}
                 </div>
 
                 <div class="d-flex justify-content-end mb-4">
