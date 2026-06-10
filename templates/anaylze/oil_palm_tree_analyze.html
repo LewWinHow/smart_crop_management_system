@@ -1,0 +1,385 @@
+{% extends "navigation_bar.html" %}
+
+{% block title %}Oil Palm Tree Analysis - AI Oil Palm Mentor System{% endblock %}
+
+{% block page_content %}
+    <style>
+        /* Fade-in animation for page content */
+        .fade-in-content {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Remove leading spaces from first paragraph */
+        .analysis-text {
+            white-space: pre-wrap;
+            line-height: 1.8;
+        }
+        
+        /* Remove all leading whitespace from each line */
+        .analysis-text {
+            white-space: pre-wrap;
+            line-height: 1.8;
+            tab-size: 0;
+        }
+        
+        /* Scrollable text container with max height */
+        .scrollable-text {
+            max-height: 300px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        
+        /* Custom scrollbar styling */
+        .scrollable-text::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .scrollable-text::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        .scrollable-text::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        
+        .scrollable-text::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+
+    </style>
+    
+    <div class="row justify-content-center fade-in-content">
+        <div class="col-12">
+            <!-- Header -->
+            <div class="mb-4 d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+                <div class="text-center text-md-start">
+                    <h2 class="fw-bold text-success-emphasis mb-2 d-flex align-items-center gap-2">
+                        <i class="bi bi-microscope text-success" aria-hidden="true"></i>
+                        Oil Palm Tree Analysis
+                    </h2>
+                </div>
+            </div>
+
+            {% if error_message %}
+                <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+                    <div>{{ error_message }}</div>
+                </div>
+            {% endif %}
+
+            {% if success_message %}
+                <div class="alert alert-success d-flex align-items-center gap-2" role="alert">
+                    <i class="bi bi-check-circle-fill fs-5"></i>
+                    <div>{{ success_message }}</div>
+                </div>
+            {% endif %}
+
+            <form method="post" enctype="multipart/form-data" class="row g-4" id="uploadForm">
+                {% csrf_token %}
+
+                <!-- Upload Section -->
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm hover-elevate">
+                        <div class="card-body p-4">
+                            <h6 class="fw-bold text-success-emphasis mb-3 d-flex align-items-center gap-2">
+                                <i class="bi bi-camera-fill text-success" aria-hidden="true"></i>
+                                Upload Tree Photo
+                            </h6>
+                            
+                            <div class="row g-3">
+                                <div class="col-12 col-md-8">
+                                    <label for="imageInput" class="form-label fw-semibold text-dark">
+                                        <i class="bi bi-image-fill me-1 text-success" aria-hidden="true"></i>
+                                        Tree Photo
+                                    </label>
+                                    <input
+                                            type="file"
+                                            class="form-control form-control-lg"
+                                            id="imageInput"
+                                            name="image"
+                                            accept="image/*"
+                                            required
+                                    >
+                                </div>
+                                <div class="col-12 col-md-4 d-flex align-items-end">
+                                    <button type="submit" id="submitBtn" class="btn btn-success btn-lg w-100">
+                                        <i class="bi bi-upload me-2" aria-hidden="true"></i>
+                                        <span id="btnText">Upload & Analyze</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tree Location Section -->
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm hover-elevate">
+                        <div class="card-body p-4">
+                            <h6 class="fw-bold text-success-emphasis mb-3 d-flex align-items-center gap-2">
+                                <i class="bi bi-geo-alt-fill text-success" aria-hidden="true"></i>
+                                Tree Location
+                            </h6>
+                            
+                            <div class="row g-3">
+                                <!-- Zone Selection -->
+                                <div class="col-12 col-md-4">
+                                    <label for="zoneSelect" class="form-label fw-semibold text-dark">
+                                        <i class="bi bi-signpost-2-fill me-1 text-success" aria-hidden="true"></i>
+                                        Select Zone
+                                    </label>
+                                    <select
+                                            class="form-select form-select-lg"
+                                            id="zoneSelect"
+                                            name="zone"
+                                            required
+                                    >
+                                        <option value="" selected disabled>Choose a zone...</option>
+                                        {% for zone in all_zone %}
+                                            <option value="{{ zone.id }}">Zone {{ zone.zone_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                
+                                <!-- Row Position -->
+                                <div class="col-12 col-md-4">
+                                    <label for="rowInput" class="form-label fw-semibold text-dark">
+                                        <i class="bi bi-grid-3x3 me-1 text-success" aria-hidden="true"></i>
+                                        Row Position
+                                    </label>
+                                    <input
+                                            type="number"
+                                            class="form-control form-control-lg"
+                                            id="rowInput"
+                                            name="row"
+                                            placeholder="e.g., 5"
+                                            min="1"
+                                            required
+                                    >
+                                </div>
+                                
+                                <!-- Column Position -->
+                                <div class="col-12 col-md-4">
+                                    <label for="columnInput" class="form-label fw-semibold text-dark">
+                                        <i class="bi bi-layout-three-columns me-1 text-success" aria-hidden="true"></i>
+                                        Column Position
+                                    </label>
+                                    <input
+                                            type="number"
+                                            class="form-control form-control-lg"
+                                            id="columnInput"
+                                            name="column"
+                                            placeholder="e.g., 12"
+                                            min="1"
+                                            required
+                                    >
+                                </div>
+                            </div>
+                            
+                            <!-- Quick Select from Existing Trees -->
+                            {% if all_oil_palm_tree %}
+                            <div class="mt-4 pt-3 border-top">
+                                <h6 class="fw-bold text-success-emphasis mb-3 d-flex align-items-center gap-2">
+                                    <i class="bi bi-lightning-fill text-warning" aria-hidden="true"></i>
+                                    Quick Select Existing Tree
+                                </h6>
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label for="existingTreeSelect" class="form-label fw-semibold text-dark">
+                                            <i class="bi bi-tree-fill me-1 text-success" aria-hidden="true"></i>
+                                            Select from Database
+                                        </label>
+                                        <select
+                                                class="form-select form-select-lg"
+                                                id="existingTreeSelect"
+                                        >
+                                            <option value="" selected disabled>Choose an existing tree...</option>
+                                            {% for tree in all_oil_palm_tree %}
+                                                <option value="{{ tree.id }}" 
+                                                        data-zone="{{ tree.zone.id }}" 
+                                                        data-row="{{ tree.row }}" 
+                                                        data-column="{{ tree.column }}">
+                                                    Zone {{ tree.zone.zone_name }} - R{{ tree.row }} C{{ tree.column }} (ID: {{ tree.id }})
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const form = document.getElementById('uploadForm');
+                    const submitBtn = document.getElementById('submitBtn');
+                    const btnText = document.getElementById('btnText');
+                    const imageInput = document.getElementById('imageInput');
+                    
+                    form.addEventListener('submit', function(e) {
+                        // 检查是否选择了文件
+                        if (!imageInput.files || imageInput.files.length === 0) {
+                            return;
+                        }
+                        
+                        // 禁用按钮
+                        submitBtn.disabled = true;
+                        submitBtn.classList.add('disabled');
+                        
+                        // 显示加载状态
+                        btnText.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Analyzing...';
+                    });
+                    
+                    // Remove leading spaces from analysis text
+                    const analysisResult = document.getElementById('analysisResult');
+                    if (analysisResult) {
+                        const text = analysisResult.textContent;
+                        // Remove leading whitespace from each line
+                        const cleanedText = text.split('\n').map(line => line.trimStart()).join('\n');
+                        analysisResult.textContent = cleanedText;
+                    }
+                    
+                    // Quick select existing tree - auto fill fields
+                    const existingTreeSelect = document.getElementById('existingTreeSelect');
+                    if (existingTreeSelect) {
+                        existingTreeSelect.addEventListener('change', function() {
+                            const selectedOption = this.options[this.selectedIndex];
+                            const zoneId = selectedOption.getAttribute('data-zone');
+                            const row = selectedOption.getAttribute('data-row');
+                            const column = selectedOption.getAttribute('data-column');
+                            
+                            // Auto fill the fields
+                            document.getElementById('zoneSelect').value = zoneId;
+                            document.getElementById('rowInput').value = row;
+                            document.getElementById('columnInput').value = column;
+                            
+                            // Add visual feedback
+                            document.getElementById('zoneSelect').classList.add('border-success');
+                            document.getElementById('rowInput').classList.add('border-success');
+                            document.getElementById('columnInput').classList.add('border-success');
+                            
+                            setTimeout(() => {
+                                document.getElementById('zoneSelect').classList.remove('border-success');
+                                document.getElementById('rowInput').classList.remove('border-success');
+                                document.getElementById('columnInput').classList.remove('border-success');
+                            }, 1500);
+                        });
+                    }
+                });
+            </script>
+
+            {% if image and response %}
+                <!-- Analysis Results Section -->
+                <div class="row g-4 mt-3">
+                    <!-- Left: Processed Image -->
+                    <div class="col-12 col-lg-6">
+                        <div class="card border-0 shadow-sm h-100 hover-elevate">
+                            <div class="card-body p-4">
+                                <h6 class="fw-bold text-success-emphasis mb-3 d-flex align-items-center gap-2">
+                                    <i class="bi bi-file-earmark-image-fill text-success" aria-hidden="true"></i>
+                                    Processed Image
+                                </h6>
+                                
+                                <div class="text-center">
+                                    <img src="{{ MEDIA_URL }}{{ image }}" 
+                                         alt="Cropped Palm Tree" 
+                                         class="img-fluid rounded-3 shadow-sm" 
+                                         style="max-height: 500px; object-fit: contain;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Classification Result -->
+                    {% if Dict %}
+                    <div class="col-12 col-lg-6">
+                        <div class="card border-0 shadow-sm h-100 hover-elevate">
+                            <div class="card-body p-4">
+                                <h6 class="fw-bold text-success-emphasis mb-3 d-flex align-items-center gap-2">
+                                    <i class="bi bi-tags-fill text-success" aria-hidden="true"></i>
+                                    Classification Result
+                                </h6>
+                                
+                                <div class="p-3 bg-light rounded-3 border">
+                                    <div class="row g-3">
+                                        <!-- Status -->
+                                        <div class="col-4">
+                                            <div class="text-center p-3 bg-white rounded-3 border shadow-sm">
+                                                <i class="bi bi-heart-pulse-fill fs-2 {% if Dict.status == 1 %}text-success{% elif Dict.status == 2 %}text-warning{% else %}text-danger{% endif %} mb-2 d-block"></i>
+                                                <small class="text-muted d-block mb-1">Status</small>
+                                                <strong class="{% if Dict.status == 1 %}text-success{% elif Dict.status == 2 %}text-warning{% else %}text-danger{% endif %}">
+                                                    {% if Dict.status == 1 %}Healthy{% elif Dict.status == 2 %}Nutrient Deficiency{% elif Dict.status == 3 %}Sick{% else %}Unknown{% endif %}
+                                                </strong>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Disease -->
+                                        <div class="col-4">
+                                            <div class="text-center p-3 bg-white rounded-3 border shadow-sm">
+                                                <i class="bi bi-bug-fill fs-2 {% if Dict.disease == 1 %}text-success{% elif Dict.disease <= 3 %}text-danger{% else %}text-warning{% endif %} mb-2 d-block"></i>
+                                                <small class="text-muted d-block mb-1">Disease</small>
+                                                <strong class="{% if Dict.disease == 1 %}text-success{% elif Dict.disease <= 3 %}text-danger{% else %}text-warning{% endif %}">
+                                                    {% if Dict.disease == 1 %}None{% elif Dict.disease == 2 %}Ganoderma{% elif Dict.disease == 3 %}Basal Stem Rot{% elif Dict.disease == 4 %}Leaf Spot{% elif Dict.disease == 5 %}Anthracnose{% else %}Unknown{% endif %}
+                                                </strong>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Productivity -->
+                                        <div class="col-4">
+                                            <div class="text-center p-3 bg-white rounded-3 border shadow-sm">
+                                                <i class="bi bi-egg-fill fs-2 {% if Dict.productivity == 1 %}text-success{% elif Dict.productivity == 2 %}text-warning{% else %}text-secondary{% endif %} mb-2 d-block"></i>
+                                                <small class="text-muted d-block mb-1">Productivity</small>
+                                                <strong class="{% if Dict.productivity == 1 %}text-success{% elif Dict.productivity == 2 %}text-warning{% else %}text-secondary{% endif %}">
+                                                    {% if Dict.productivity == 1 %}Producing{% elif Dict.productivity == 2 %}Not Producing{% else %}Unknown{% endif %}
+                                                </strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Full Width: Analysis Results -->
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm hover-elevate">
+                            <div class="card-body p-4">
+                                <h6 class="fw-bold text-success-emphasis mb-3 d-flex align-items-center gap-2">
+                                    <i class="bi bi-clipboard-data-fill text-success" aria-hidden="true"></i>
+                                    Analysis Results
+                                </h6>
+                                
+                                <div class="p-3 bg-light rounded-3 border scrollable-text">
+                                    <div class="text-dark analysis-text" id="analysisResult">{{ response }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+{% endblock %}
+
+
+
+

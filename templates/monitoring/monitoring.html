@@ -1,218 +1,254 @@
 {% extends "navigation_bar.html" %}
 
-{% block title %}Monitoring Dashboard - Smart Crop{% endblock %}
+{% block title %}Monitoring Dashboard - AI Oil Palm Mentor System{% endblock %}
 
 {% block page_content %}
-<div class="container-fluid p-0">
-    <div class="d-flex align-items-center mb-3">
-        <h4 class="fw-bold mb-0 text-dark me-2">🌍 Global Overview</h4>
-        <span class="text-muted small">System-wide performance metrics</span>
-    </div>
-
-    <div class="row g-3 mb-5">
-        <div class="col-6 col-md-3">
-            <div class="card border-0 shadow-sm bg-success text-white h-100">
-                <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
-                    <span class="fs-1 mb-2">&#128205;</span>
-                    <h6 class="mb-1 text-white-50">Total Zones</h6>
-                    <h2 class="fw-bold mb-0">{{ global.zone_count }}</h2>
+    <style>
+        /* Fade-in animation for page content */
+        .fade-in-content {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+    
+    <div class="row justify-content-center fade-in-content">
+        <div class="col-12">
+            <!-- Header -->
+            <div class="mb-4 d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+                <div class="text-center text-md-start">
+                    <h2 class="fw-bold text-success-emphasis mb-2 d-flex align-items-center gap-2">
+                        <i class="bi bi-globe-americas text-success" aria-hidden="true"></i>
+                        Farm Overview
+                    </h2>
                 </div>
             </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="card border-0 shadow-sm bg-primary text-white h-100">
-                <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
-                    <span class="fs-1 mb-2">&#127796;</span>
-                    <h6 class="mb-1 text-white-50">Total Trees</h6>
-                    <h2 class="fw-bold mb-0">{{ global.total_trees }}</h2>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-12 col-md-6">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body d-flex align-items-center justify-content-between">
-                    <div>
-                        <h6 class="text-muted mb-3">Health Status</h6>
-                        <div class="d-flex gap-3">
-                            <div>
-                                <div class="text-success fw-bold fs-4">{{ global.healthy }}</div>
-                                <small class="text-muted">Healthy</small>
-                            </div>
-                            <div class="border-start border-2 border-light"></div>
-                            <div>
-                                <div class="text-danger fw-bold fs-4">{{ global.sick }}</div>
-                                <small class="text-muted">Sick</small>
-                            </div>
+            
+            <!-- Statistics Cards -->
+            <div class="row g-3 g-md-4 mb-4">
+                <div class="col-12 col-md-6 col-xl-3">
+                    <div class="card stat-card shadow-sm h-100 text-white border-0 hover-elevate" style="background: linear-gradient(135deg, #198754 0%, #157347 100%);">
+                        <div class="card-body text-center d-flex flex-column justify-content-center p-4">
+                            <i class="bi bi-geo-alt-fill display-6 mb-2 text-white-50"></i>
+                            <h6 class="mb-1 fw-light">Total Zones</h6>
+                            <h2 class="fw-bold mb-0 display-6">{{ global.zone_count }}</h2>
                         </div>
                     </div>
-                    <div class="text-end">
-                        <div class="text-warning fw-bold fs-1">{{ global.infection_rate }}%</div>
-                        <small class="text-muted">Global Infection Rate</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-12 col-lg-6">
-            <div class="card border-0 shadow-sm h-100 bg-light">
-                <div class="card-body text-center d-flex justify-content-around align-items-center">
-                    <div>
-                        <h6 class="text-muted mb-2">Total Fruiting</h6>
-                        <h4 class="text-success fw-bold mb-0" id="kpi-fruiting">-</h4>
-                    </div>
-                    <div>
-                        <h6 class="text-muted mb-2">Non-Fruiting</h6>
-                        <h4 class="text-secondary fw-bold mb-0" id="kpi-nonfruiting">-</h4>
-                    </div>
-                    <div>
-                        <h6 class="text-muted mb-2">Unproductive</h6>
-                        <h4 class="text-danger fw-bold mb-0" id="kpi-dead">-</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-12 col-lg-6">
-            <div class="card border-0 shadow-sm h-100 bg-light">
-                <div class="card-body text-center d-flex justify-content-around align-items-center">
-                    <div>
-                        <h6 class="text-muted mb-2">Avg Temp</h6>
-                        <h4 class="text-danger fw-bold mb-0"><span id="kpi-temp">-</span>°C</h4>
-                    </div>
-                    <div>
-                        <h6 class="text-muted mb-2">Avg Humidity</h6>
-                        <h4 class="text-info fw-bold mb-0"><span id="kpi-humidity">-</span>%</h4>
-                    </div>
-                    <div>
-                        <h6 class="text-muted mb-2">Avg Rainfall</h6>
-                        <h4 class="text-primary fw-bold mb-0"><span id="kpi-rain">-</span>mm</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="d-flex align-items-center mb-3">
-        <h4 class="fw-bold mb-0 text-dark me-2">🟩 Zone Overview</h4>
-        <span class="text-muted small">Per-zone localized data</span>
-    </div>
-
-    <div class="row row-cols-1 row-cols-xl-2 g-4 mb-5">
-        {% for zone in zones %}
-        <div class="col">
-            <div class="card h-100 shadow-sm border-success border-opacity-25 rounded-4 overflow-hidden">
-                <div class="card-header bg-success bg-opacity-10 py-3 border-0 d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0 fw-bold text-success">&#128204; Zone {{ zone.zone_name }}</h5>
-                    <div class="d-flex gap-2 flex-wrap justify-content-end">
-                        <span class="badge bg-secondary">N: {{ zone.n_value }}</span>
-                        <span class="badge bg-secondary">P: {{ zone.p_value }}</span>
-                        <span class="badge bg-secondary">K: {{ zone.k_value }}</span>
-                        <span class="badge bg-info text-dark">pH: {{ zone.ph }}</span>
-                    </div>
                 </div>
 
-                <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-12 col-sm-6 border-end-sm">
-                            <h6 class="text-uppercase text-muted small fw-bold">Health & Trees</h6>
-                            <p class="mb-1"><strong>Total:</strong> {{ zone.total_trees }} trees</p>
-                            <div class="progress mb-2" style="height: 10px;">
-                                {% widthratio zone.healthy_trees zone.total_trees 100 as h_pct %}
-                                <div class="progress-bar bg-success" role="progressbar" style="width: {{ h_pct }}%" title="Healthy"></div>
-                                <div class="progress-bar bg-danger" role="progressbar" style="width: {{ zone.infection_rate }}%" title="Sick"></div>
-                            </div>
-                            <div class="d-flex justify-content-between small text-muted mb-3">
-                                <span class="text-success"><i class="bi bi-check-circle-fill"></i> {{ zone.healthy_trees }} Healthy</span>
-                                <span class="text-danger"><i class="bi bi-x-circle-fill"></i> {{ zone.sick_trees }} Sick ({{ zone.infection_rate }}%)</span>
-                            </div>
-
-                            <h6 class="text-uppercase text-muted small fw-bold mt-2">Productivity</h6>
-                            <ul class="list-unstyled small mb-0">
-                                {% for p in zone.productivity %}
-                                    {% if p.productivity__productivity_status == 1 %}
-                                        <li>&#127811; Fruiting: <strong>{{ p.count }}</strong></li>
-                                    {% elif p.productivity__productivity_status == 2 %}
-                                        <li>&#127793; Non-Fruiting: <strong>{{ p.count }}</strong></li>
-                                    {% elif p.productivity__productivity_status == 3 %}
-                                        <li>&#127810; Desiccated: <strong>{{ p.count }}</strong></li>
-                                    {% endif %}
-                                {% empty %}
-                                    <li class="text-muted">No data</li>
-                                {% endfor %}
-                            </ul>
+                <div class="col-12 col-md-6 col-xl-3">
+                    <div class="card stat-card shadow-sm h-100 text-white border-0 hover-elevate" style="background: linear-gradient(135deg, #0f5132 0%, #0a3622 100%);">
+                        <div class="card-body text-center d-flex flex-column justify-content-center p-4">
+                            <i class="bi bi-tree-fill display-6 mb-2 text-white-50"></i>
+                            <h6 class="mb-1 fw-light">Total Trees</h6>
+                            <h2 class="fw-bold mb-0 display-6">{{ global.total_trees }}</h2>
                         </div>
+                    </div>
+                </div>
 
-                        <div class="col-12 col-sm-6 ps-sm-3">
-                            <h6 class="text-uppercase text-muted small fw-bold">Latest Weather</h6>
-                            {% if zone.latest_weather %}
-                                <div class="bg-light p-2 rounded-3 small">
-                                    <div class="d-flex justify-content-between mb-1">
-                                        <span>&#127777; Temp:</span> <strong>{{ zone.latest_weather.temperature|floatformat:2 }} °C</strong>
-                                    </div>
-                                    <div class="d-flex justify-content-between mb-1">
-                                        <span>&#128167; Humidity:</span> <strong>{{ zone.latest_weather.humidity|floatformat:2 }} %</strong>
-                                    </div>
-                                    <div class="d-flex justify-content-between mb-1">
-                                        <span>&#9748; Rainfall:</span> <strong>{{ zone.latest_weather.rainfall|floatformat:2 }} mm</strong>
-                                    </div>
-                                    <hr class="my-1 text-muted">
-                                    <div class="text-muted" style="font-size: 0.75rem;">
-                                        Rec: {{ zone.latest_weather.end_time|date:"Y-m-d H:i" }}
+                <div class="col-12 col-md-6 col-xl-3">
+                    <div class="card stat-card shadow-sm h-100 border-0 hover-elevate" style="background: rgba(248, 249, 250, 0.9);">
+                        <div class="card-body d-flex flex-column justify-content-center p-4">
+                            <h6 class="text-secondary mb-3 text-uppercase fw-bold small">Global Health Status</h6>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                                    <div>
+                                        <h5 class="fw-bold mb-0" style="color: #198754 !important;">{{ global.healthy }}</h5>
+                                        <small class="text-muted">Healthy</small>
                                     </div>
                                 </div>
-                            {% else %}
-                                <p class="text-muted small">No weather data recorded recently.</p>
-                            {% endif %}
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-exclamation-circle-fill text-warning fs-4"></i>
+                                    <div class="text-end">
+                                        <h5 class="fw-bold mb-0" style="color: #ffc107 !important;">{{ global.nutrient_deficiency }}</h5>
+                                        <small class="text-muted">Nutrient Deficiency</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-exclamation-triangle-fill text-danger fs-4"></i>
+                                    <div>
+                                        <h5 class="fw-bold mb-0" style="color: #dc3545 !important;">{{ global.sick }}</h5>
+                                        <small class="text-muted">Sick</small>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-question-circle-fill text-secondary fs-4"></i>
+                                    <div class="text-end">
+                                        <h5 class="fw-bold mb-0" style="color: #6c757d !important;">{{ global.unknown }}</h5>
+                                        <small class="text-muted">Unknown</small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="card-footer bg-white border-top-0 pt-0">
-                    <a href="{% url 'monitoring:zone_detail' zone.id %}" class="btn btn-outline-success w-100 btn-sm">View Zone {{ zone.zone_name }} Details &rarr;</a>
+                <div class="col-12 col-md-6 col-xl-3">
+                    <div class="card stat-card shadow-sm h-100 border-0 inner-glass-weather hover-elevate">
+                        <div class="card-body d-flex flex-column justify-content-center p-4">
+                            <h6 class="text-uppercase text-secondary small fw-bold mb-3 d-flex align-items-center gap-2">
+                                <i class="bi bi-cloud-sun-fill text-info fs-5"></i> Farm Weather in Pahang (Current)
+                            </h6>
+                            <div class="d-flex justify-content-between align-items-center text-center mt-2">
+                                <div class="flex-fill">
+                                    <h3 class="text-dark fw-bold mb-0"><span id="kpi-temp">{{ current_temp|default:"-" }}</span><span class="fs-6 text-muted ms-1">°C</span></h3>
+                                    <small class="text-muted fw-medium" style="font-size: 0.75rem;">Temp</small>
+                                </div>
+                                <div class="border-start border-2 border-secondary opacity-25" style="height: 35px;"></div>
+                                <div class="flex-fill">
+                                    <h3 class="text-info fw-bold mb-0"><span id="kpi-humidity">{{ current_humidity|default:"-" }}</span><span class="fs-6 text-muted ms-1">%</span></h3>
+                                    <small class="text-muted fw-medium" style="font-size: 0.75rem;">Humid</small>
+                                </div>
+                                <div class="border-start border-2 border-secondary opacity-25" style="height: 35px;"></div>
+                                <div class="flex-fill">
+                                    <h3 class="text-success fw-bold mb-0"><span id="kpi-rain">{{ current_rainfall|default:"-" }}</span><span class="fs-6 text-muted ms-1">mm</span></h3>
+                                    <small class="text-muted fw-medium" style="font-size: 0.75rem;">Rain</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        {% endfor %}
-    </div>
 
-    <div class="d-flex align-items-center mb-3">
-        <h4 class="fw-bold mb-0 text-dark me-2">📊 Analytics & Trends</h4>
-        <span class="text-muted small">Cross-zone comparisons</span>
-    </div>
 
-    <div class="row g-4">
-        <div class="col-12 col-lg-6">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <h6 class="fw-bold text-secondary mb-3">Infection Rates by Zone (%)</h6>
-                    <div style="height: 300px;"><canvas id="infectionChart"></canvas></div>
+            <!-- Zones Section -->
+            <div class="mb-4 mt-2">
+                <h2 class="fw-bold text-success-emphasis mb-2 d-flex align-items-center gap-2">
+                    <i class="bi bi-grid-1x2-fill text-success" aria-hidden="true"></i>
+                    Zones
+                </h2>
+            </div>
+
+            <div class="row g-4 mb-5">
+                {% for zone in zones %}
+                <div class="col-12 col-xl-6">
+                    <div class="card card-app h-100 overflow-hidden inner-glass-white hover-elevate">
+                        <div class="card-header bg-success bg-opacity-10 p-3 p-md-4 border-0 d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0 fw-bold text-success d-flex align-items-center gap-2">
+                                <i class="bi bi-signpost-2-fill"></i> Zone {{ zone.zone_name }}
+                            </h5>
+                        </div>
+                        <div class="card-body p-3 p-md-4">
+                            <div class="row g-4 h-100">
+                                <div class="col-12 col-md-6 border-end-md">
+                                    <h6 class="text-uppercase text-secondary small fw-bold mb-3"><i class="bi bi-activity me-1"></i> Health & Trees</h6>
+                                    <p class="mb-2 small text-dark"><strong>Total:</strong> {{ zone.total_trees }} trees</p>
+                                    <div class="progress mb-2 rounded-pill bg-light" style="height: 8px;">
+                                        {% widthratio zone.healthy_trees zone.total_trees 100 as h_pct %}
+                                        {% widthratio zone.nutrient_deficiency_trees zone.total_trees 100 as n_pct %}
+                                        {% widthratio zone.sick_trees zone.total_trees 100 as s_pct %}
+                                        {% widthratio zone.unknown_trees zone.total_trees 100 as u_pct %}
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ h_pct }}%"></div>
+                                        <div class="progress-bar bg-warning" role="progressbar" style="width: {{ n_pct }}%"></div>
+                                        <div class="progress-bar bg-danger" role="progressbar" style="width: {{ s_pct }}%"></div>
+                                        <div class="progress-bar bg-secondary" role="progressbar" style="width: {{ u_pct }}%"></div>
+                                    </div>
+                                    <div class="d-flex flex-column gap-2 mb-4">
+                                        <div class="d-flex justify-content-between">
+                                            <span class="text-success fw-semibold small">{{ zone.healthy_trees }} Healthy</span>
+                                            <span class="text-warning fw-semibold small">{{ zone.nutrient_deficiency_trees }} Nutrient Deficiency</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span class="text-danger fw-semibold small">{{ zone.sick_trees }} Sick</span>
+                                            <span class="text-secondary fw-semibold small">{{ zone.unknown_trees }} Unknown</span>
+                                        </div>
+                                    </div>
+
+                                    <h6 class="text-uppercase text-secondary small fw-bold mb-3"><i class="bi bi-egg-fill me-1"></i> Productivity</h6>
+                                    <ul class="list-unstyled small mb-0 d-flex flex-column gap-2">
+                                        <li class="d-flex justify-content-between align-items-center">
+                                            <span class="text-success fw-semibold">Producing</span>
+                                            <strong class="badge bg-success bg-opacity-10 text-success rounded-pill px-2 border border-success">{{ zone.producing_trees }}</strong>
+                                        </li>
+                                        <li class="d-flex justify-content-between align-items-center">
+                                            <span class="text-warning fw-semibold">Not Producing</span>
+                                            <strong class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-2 border border-warning">{{ zone.not_producing_trees }}</strong>
+                                        </li>
+                                        <li class="d-flex justify-content-between align-items-center">
+                                            <span class="text-secondary fw-semibold">Unknown</span>
+                                            <strong class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-2 border border-secondary">{{ zone.unknown_productivity_trees }}</strong>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-12 col-md-6 d-flex flex-column">
+                                    <h6 class="text-uppercase text-secondary small fw-bold mb-3"><i class="bi bi-moisture me-1"></i> Soil Profile</h6>
+                                    <div class="p-3 rounded-4 flex-grow-1 d-flex flex-column justify-content-center bg-black bg-opacity-10">
+                                        <div class="d-flex justify-content-between align-items-center mb-3"><span class="small text-dark fw-semibold">Nitrogen (N)</span><span class="badge bg-white text-dark shadow-sm rounded-pill">{{ zone.n_value }} mg/kg</span></div>
+                                        <div class="d-flex justify-content-between align-items-center mb-3"><span class="small text-dark fw-semibold">Phosphorus (P)</span><span class="badge bg-white text-dark shadow-sm rounded-pill">{{ zone.p_value }} mg/kg</span></div>
+                                        <div class="d-flex justify-content-between align-items-center mb-3"><span class="small text-dark fw-semibold">Potassium (K)</span><span class="badge bg-white text-dark shadow-sm rounded-pill">{{ zone.k_value }} mg/kg</span></div>
+                                        <hr class="my-1 border-secondary opacity-25">
+                                        <div class="d-flex justify-content-between align-items-center mt-2"><span class="small text-dark fw-bold">pH Level</span><strong class="text-success fs-5">{{ zone.ph }}</strong></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent border-0 p-3 p-md-4 pt-0">
+                            <a href="{% url 'monitoring:zone_detail' zone.id %}" class="btn w-100 rounded-pill shadow-sm btn-outline-success">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+
+            <!-- Analytics Section -->
+            <div class="mb-4 mt-2">
+                <h2 class="fw-bold text-success-emphasis mb-2 d-flex align-items-center gap-2">
+                    <i class="bi bi-bar-chart-fill text-success" aria-hidden="true"></i>
+                    Analytics
+                </h2>
+            </div>
+
+            <div class="row g-4 mb-5">
+                <div class="col-12 col-lg-6">
+                    <div class="card card-app shadow-sm h-100 hover-elevate">
+                        <div class="card-body p-3 p-md-4">
+                            <h6 class="fw-bold text-dark mb-3"><i class="bi bi-bar-chart-fill text-success me-2"></i> Health Status Stacked Bar Chart</h6>
+                            <div class="position-relative w-100" style="height: 300px;"><canvas id="healthStatusChart"></canvas></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-6">
+                    <div class="card card-app shadow-sm h-100 hover-elevate">
+                        <div class="card-body p-3 p-md-4">
+                            <h6 class="fw-bold text-dark mb-3"><i class="bi bi-bar-chart-fill text-warning me-2"></i> Disease Stacked Bar Chart</h6>
+                            <div class="position-relative w-100" style="height: 300px;"><canvas id="diseaseChart"></canvas></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-6">
+                    <div class="card card-app shadow-sm h-100 hover-elevate">
+                        <div class="card-body p-3 p-md-4">
+                            <h6 class="fw-bold text-dark mb-3"><i class="bi bi-bar-chart-fill text-success me-2"></i> Productivity Stacked Bar Chart</h6>
+                            <div class="position-relative w-100" style="height: 300px;"><canvas id="productivityChart"></canvas></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-6">
+                    <div class="card card-app shadow-sm h-100 hover-elevate">
+                        <div class="card-body p-3 p-md-4">
+                            <h6 class="fw-bold text-dark mb-3"><i class="bi bi-cloud-sun-fill text-info me-2"></i> Farm-Wide Weather Multiple Axes Chart</h6>
+                            <div class="position-relative w-100" style="height: 300px;"><canvas id="weatherChart"></canvas></div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-12 col-lg-6">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <h6 class="fw-bold text-secondary mb-3">Global Disease Distribution</h6>
-                    <div style="height: 300px;"><canvas id="diseaseChart"></canvas></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-lg-6">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <h6 class="fw-bold text-secondary mb-3">Productivity Distribution</h6>
-                    <div style="height: 300px;"><canvas id="productivityChart"></canvas></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-lg-6">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <h6 class="fw-bold text-secondary mb-3">Average Weather Trends by Zone</h6>
-                    <div style="height: 300px;"><canvas id="weatherChart"></canvas></div>
-                </div>
-            </div>
+
         </div>
     </div>
 
@@ -225,160 +261,288 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    // ==== 1. 接收来自 Django View 的数据 ====
+
+    // --- 区域数据 (X轴为 Zone) ---
     const zoneLabels = {{ zone_labels|safe }};
     const infectionRates = {{ infection_rates|safe }};
-
     const prodFruiting = {{ productivity_fruiting|safe }};
     const prodNonFruiting = {{ productivity_non_fruiting|safe }};
-    const prodDead = {{ productivity_dead|safe }};
+    const prodUnknown = {{ productivity_unknown|safe }};
 
-    const tempAvg = {{ temp_avg|safe }};
-    const humidityAvg = {{ humidity_avg|safe }};
-    const rainfallAvg = {{ rainfall_avg|safe }};
+    // --- 健康状态数据 (第一个图表 - 按 Zone 分布) ---
+    const zoneHealthy = {{ zone_healthy|safe }};
+    const zoneNutrientDeficiency = {{ zone_nutrient_deficiency|safe }};
+    const zoneSick = {{ zone_sick|safe }};
+    const zoneUnknown = {{ zone_unknown|safe }};
 
-    // 疾病映射 (因为你的sick_name是数字，这里在前端做一个映射以便显示)
-    const rawDiseaseLabels = {{ disease_labels|safe }};
-    const rawDiseaseData = {{ disease_data|safe }};
-    const diseaseNames = {
-        "1": "Healthy",
-        "2": "Detect Ganoderma",
-        "3": "Ganoderma Fungus",
-        "4": "Hollow Stem",
-        "5": "Moldy"
-    };
-    const mappedDiseaseLabels = rawDiseaseLabels.map(label => diseaseNames[label] || label);
+    // --- 农场历史天气数据 (X轴为 日期/时间) ---
+    // 注意: 确保在 Django views.py 里传入了这几个变量
+    const weatherDates = {{ weather_dates|safe }};
+    const historicalTemp = {{ weather_temp_history|safe }};
+    const historicalHum = {{ weather_hum_history|safe }};
+    const historicalRain = {{ weather_rain_history|safe }};
 
-    // ==== 2. 动态计算顶部缺失的 KPI 数据 ====
-    const sumArray = arr => arr.reduce((a, b) => a + b, 0);
-    const avgArray = arr => arr.length ? (sumArray(arr) / arr.length).toFixed(2) : 0;
+    // 为顶部 KPI 计算平均值 (这里直接使用传入的历史数据算平均，或者你也可以在Django算好传过来)
+    // 注意：当前天气数据已直接从后端传入，无需JS计算
+    // const sumArray = arr => arr.reduce((a, b) => a + b, 0);
+    // const avgArray = arr => arr.length ? (sumArray(arr) / arr.length).toFixed(1) : 0;
+    // document.getElementById('kpi-temp').innerText = avgArray(historicalTemp);
+    // document.getElementById('kpi-humidity').innerText = avgArray(historicalHum);
+    // document.getElementById('kpi-rain').innerText = avgArray(historicalRain);
 
-    document.getElementById('kpi-fruiting').innerText = sumArray(prodFruiting);
-    document.getElementById('kpi-nonfruiting').innerText = sumArray(prodNonFruiting);
-    document.getElementById('kpi-dead').innerText = sumArray(prodDead);
+    // --- 农场土壤数据 ---
+    const nValues = [{% for z in zones %}{{ z.n_value }},{% endfor %}];
+    const pValues = [{% for z in zones %}{{ z.p_value }},{% endfor %}];
+    const kValues = [{% for z in zones %}{{ z.k_value }},{% endfor %}];
+    const phValues = [{% for z in zones %}{{ z.ph }},{% endfor %}];
 
-    document.getElementById('kpi-temp').innerText = avgArray(tempAvg);
-    document.getElementById('kpi-humidity').innerText = avgArray(humidityAvg);
-    document.getElementById('kpi-rain').innerText = avgArray(rainfallAvg);
+    // --- 疾病数据 (第二个图表 - 按 Zone 分布) ---
+    const zoneNone = {{ zone_none|safe }};
+    const zoneGanoderma = {{ zone_ganoderma|safe }};
+    const zoneLeafSpot = {{ zone_leaf_spot|safe }};
+    const zoneAnthracnose = {{ zone_anthracnose|safe }};
+    const zoneDiseaseUnknown = {{ zone_disease_unknown|safe }};
 
-    // ==== 3. 渲染 Chart.js 图表 ====
+    // 全局 Chart 配置
+    Chart.defaults.font.family = '"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif';
+    Chart.defaults.color = '#6c757d';
+    const commonOptions = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8 } } } };
 
-    // 通用配置选项，保持响应式
-    const commonOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: { position: 'bottom' }
-        }
-    };
-
-    // A. 感染率对比柱状图
-    new Chart(document.getElementById('infectionChart'), {
-        type: 'bar',
-        data: {
-            labels: zoneLabels,
-            datasets: [{
-                label: 'Infection Rate (%)',
-                data: infectionRates,
-                backgroundColor: 'rgba(220, 53, 69, 0.7)', // Bootstrap Danger色
-                borderColor: 'rgba(220, 53, 69, 1)',
-                borderWidth: 1,
-                borderRadius: 5
-            }]
-        },
-        options: { ...commonOptions, scales: { y: { beginAtZero: true, max: 100 } } }
-    });
-
-    // B. 全局病害饼图
-    new Chart(document.getElementById('diseaseChart'), {
-        type: 'doughnut',
-        data: {
-            labels: mappedDiseaseLabels,
-            datasets: [{
-                data: rawDiseaseData,
-                backgroundColor: [
-                    '#ffc107', // Warning
-                    '#fd7e14', // Orange
-                    '#dc3545', // Danger
-                    '#6f42c1', // Purple
-                    '#6c757d'  // Gray
-                ]
-            }]
-        },
-        options: commonOptions
-    });
-
-    // C. 生产力堆叠柱状图
-    new Chart(document.getElementById('productivityChart'), {
+    // 1️⃣ Health Status Distribution (Stacked Bar by Zone)
+    new Chart(document.getElementById('healthStatusChart'), {
         type: 'bar',
         data: {
             labels: zoneLabels,
             datasets: [
                 {
-                    label: 'Fruiting',
-                    data: prodFruiting,
-                    backgroundColor: '#198754' // Success
+                    label: 'Healthy',
+                    data: zoneHealthy,
+                    backgroundColor: 'rgba(25, 135, 84, 0.85)',
+                    borderRadius: 4
                 },
                 {
-                    label: 'Non-Fruiting',
-                    data: prodNonFruiting,
-                    backgroundColor: '#0dcaf0' // Info
+                    label: 'Nutrient Deficiency',
+                    data: zoneNutrientDeficiency,
+                    backgroundColor: 'rgba(255, 193, 7, 0.85)',
+                    borderRadius: 4
                 },
                 {
-                    label: 'Desiccated',
-                    data: prodDead,
-                    backgroundColor: '#adb5bd' // Gray
+                    label: 'Sick',
+                    data: zoneSick,
+                    backgroundColor: 'rgba(220, 53, 69, 0.85)',
+                    borderRadius: 4
+                },
+                {
+                    label: 'Unknown',
+                    data: zoneUnknown,
+                    backgroundColor: 'rgba(108, 117, 125, 0.6)',
+                    borderRadius: 4
                 }
             ]
         },
         options: {
             ...commonOptions,
             scales: {
-                x: { stacked: true },
-                y: { stacked: true, beginAtZero: true }
+                x: { stacked: true, grid: { display: false } },
+                y: { stacked: true, beginAtZero: true, grid: { borderDash: [5, 5] } }
             }
         }
     });
 
-    // D. 天气对比折线图 (多轴/多线)
+    // 2️⃣ Disease Distribution by Zone (Stacked Bar)
+    new Chart(document.getElementById('diseaseChart'), {
+        type: 'bar',
+        data: {
+            labels: zoneLabels,
+            datasets: [
+                {
+                    label: 'None',
+                    data: zoneNone,
+                    backgroundColor: 'rgba(25, 135, 84, 0.85)',
+                    borderRadius: 4
+                },
+                {
+                    label: 'Ganoderma Disease',
+                    data: zoneGanoderma,
+                    backgroundColor: 'rgba(220, 53, 69, 0.85)',
+                    borderRadius: 4
+                },
+                {
+                    label: 'Leaf Spot',
+                    data: zoneLeafSpot,
+                    backgroundColor: 'rgba(255, 193, 7, 0.85)',
+                    borderRadius: 4
+                },
+                {
+                    label: 'Anthracnose',
+                    data: zoneAnthracnose,
+                    backgroundColor: 'rgba(13, 202, 240, 0.85)',
+                    borderRadius: 4
+                },
+                {
+                    label: 'Unknown',
+                    data: zoneDiseaseUnknown,
+                    backgroundColor: 'rgba(108, 117, 125, 0.6)',
+                    borderRadius: 4
+                }
+            ]
+        },
+        options: {
+            ...commonOptions,
+            scales: {
+                x: { stacked: true, grid: { display: false } },
+                y: { stacked: true, beginAtZero: true, grid: { borderDash: [5, 5] } }
+            }
+        }
+    });
+
+    // 3️ Production Distribution (Stacked Bar by Zone)
+    new Chart(document.getElementById('productivityChart'), {
+        type: 'bar',
+        data: { 
+            labels: zoneLabels, 
+            datasets: [ 
+                { 
+                    label: 'Producing', 
+                    data: prodFruiting, 
+                    backgroundColor: 'rgba(25, 135, 84, 0.85)', 
+                    borderRadius: 4 
+                }, 
+                { 
+                    label: 'Not Producing', 
+                    data: prodNonFruiting, 
+                    backgroundColor: 'rgba(255, 193, 7, 0.85)', 
+                    borderRadius: 4 
+                },
+                { 
+                    label: 'Unknown', 
+                    data: prodUnknown, 
+                    backgroundColor: 'rgba(108, 117, 125, 0.6)', 
+                    borderRadius: 4 
+                } 
+            ] 
+        },
+        options: { 
+            ...commonOptions, 
+            scales: { 
+                x: { stacked: true, grid: { display: false } }, 
+                y: { stacked: true, beginAtZero: true, grid: { borderDash: [5, 5] } } 
+            } 
+        }
+    });
+
+    // 4️⃣ 🌟 Farm-Wide Weather History (完美复刻参考图) 🌟
     new Chart(document.getElementById('weatherChart'), {
+        type: 'bar',
+        data: {
+            labels: weatherDates, // 使用日期数据作为 X 轴
+            datasets: [
+                {
+                    type: 'line',
+                    label: 'Temp (°C)',
+                    data: historicalTemp,
+                    borderColor: '#f44336', // 红色
+                    backgroundColor: '#f44336',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#ffffff', // 镂空圆点
+                    pointBorderColor: '#f44336',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    tension: 0.4,
+                    yAxisID: 'y',
+                    order: 1
+                },
+                {
+                    type: 'line',
+                    label: 'Hum (%)',
+                    data: historicalHum,
+                    borderColor: '#00bcd4', // 青蓝
+                    backgroundColor: '#00bcd4',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: '#00bcd4',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    tension: 0.4,
+                    yAxisID: 'y',
+                    order: 2
+                },
+                {
+                    type: 'bar',
+                    label: 'Rain (mm)',
+                    data: historicalRain,
+                    backgroundColor: 'rgba(154, 195, 255, 0.8)', // 浅蓝柱子
+                    borderRadius: 4,
+                    yAxisID: 'y1',
+                    order: 3
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        usePointStyle: false, // 采用正方形图例
+                        boxWidth: 14,
+                        boxHeight: 14,
+                        padding: 20
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: { maxRotation: 45, minRotation: 45 } // X轴文字倾斜
+                },
+                y: {
+                    type: 'linear', position: 'left',
+                    title: { display: true, text: 'Temp / Hum', color: '#888' },
+                    grid: { color: '#f0f0f0' },
+                    suggestedMin: 20, suggestedMax: 100
+                },
+                y1: {
+                    type: 'linear', position: 'right',
+                    title: { display: true, text: 'Rainfall (mm)', color: '#888' },
+                    grid: { drawOnChartArea: false }, // 不画网格防止混乱
+                    suggestedMin: 0
+                }
+            }
+        }
+    });
+
+    // 5️⃣ NPK Chart (Zone对比)
+    new Chart(document.getElementById('npkChart'), {
+        type: 'bar',
+        data: {
+            labels: zoneLabels,
+            datasets: [
+                { label: 'Nitrogen (N)', data: nValues, backgroundColor: 'rgba(52, 152, 219, 0.85)', borderRadius: 4 },
+                { label: 'Phosphorus (P)', data: pValues, backgroundColor: 'rgba(243, 156, 18, 0.9)', borderRadius: 4 },
+                { label: 'Potassium (K)', data: kValues, backgroundColor: 'rgba(155, 89, 182, 0.85)', borderRadius: 4 }
+            ]
+        },
+        options: { ...commonOptions, scales: { y: { beginAtZero: true, grid: { borderDash: [5, 5] }, title: { display: true, text: 'mg/kg' } }, x: { grid: { display: false } } } }
+    });
+
+    // 6️⃣ pH Chart (带半透明填充)
+    new Chart(document.getElementById('phChart'), {
         type: 'line',
         data: {
             labels: zoneLabels,
-            datasets: [
-                {
-                    label: 'Temp (°C)',
-                    data: tempAvg,
-                    borderColor: '#dc3545',
-                    backgroundColor: 'transparent',
-                    tension: 0.3,
-                    yAxisID: 'y'
-                },
-                {
-                    label: 'Humidity (%)',
-                    data: humidityAvg,
-                    borderColor: '#0dcaf0',
-                    backgroundColor: 'transparent',
-                    tension: 0.3,
-                    yAxisID: 'y'
-                },
-                {
-                    label: 'Rainfall (mm)',
-                    data: rainfallAvg,
-                    type: 'bar',
-                    backgroundColor: 'rgba(13, 110, 253, 0.3)', // Primary light
-                    yAxisID: 'y1'
-                }
-            ]
+            datasets: [{
+                label: 'pH Level',
+                data: phValues,
+                borderColor: '#2ecc71',
+                backgroundColor: 'rgba(46, 204, 113, 0.2)', // 底部填充
+                borderWidth: 2, pointRadius: 4, fill: true, tension: 0.3
+            }]
         },
-        options: {
-            ...commonOptions,
-            scales: {
-                y: { type: 'linear', display: true, position: 'left', title: {display: true, text: 'Temp & Hum'} },
-                y1: { type: 'linear', display: true, position: 'right', title: {display: true, text: 'Rainfall'}, grid: { drawOnChartArea: false } }
-            }
-        }
+        options: { ...commonOptions, scales: { y: { beginAtZero: true, max: 14, grid: { borderDash: [5, 5] }, title: { display: true, text: 'pH (0-14)' } }, x: { grid: { display: false } } } }
     });
+
 });
 </script>
 {% endblock %}

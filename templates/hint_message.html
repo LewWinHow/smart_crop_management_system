@@ -1,6 +1,10 @@
 {% extends "background.html" %}
 
-{% block title %}Message - Smart Crop Management{% endblock %}
+{% block title %}Message - AI Oil Palm Mentor System{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+{% endblock %}
 
 {% block content_shell_class %}position-relative px-3 px-sm-4 mx-auto w-100{% endblock %}
 {% block content_shell_style %}max-width: min(100%, 34rem);{% endblock %}
@@ -8,11 +12,13 @@
 {% block content %}
 <div class="w-100 mx-auto">
     <div class="text-center mb-4 mb-md-5">
-        <h1 class="fw-bold text-dark mb-2 fs-4 fs-md-3">Smart Crop Management System</h1>
-        <p class="text-muted small mb-0 px-2">Message</p>
+        <h1 class="fw-bold text-dark mb-2 fs-4 fs-md-3 d-flex align-items-center justify-content-center gap-2">
+            <i class="bi bi-chat-square-text text-success" aria-hidden="true"></i>
+            Hint Message
+        </h1>
     </div>
 
-    <div class="alert alert-info mb-4" role="alert">
+    <div class="alert alert-success mb-4" role="alert">
         {{ message }}
     </div>
 

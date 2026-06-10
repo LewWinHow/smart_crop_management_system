@@ -1,6 +1,6 @@
 {% extends "background.html" %}
 
-{% block title %}Dashboard - Smart Crop Management{% endblock %}
+{% block title %}Dashboard - AI Oil Palm Mentor System{% endblock %}
 
 {% block content_wrapper_class %}layout-fullbleed{% endblock %}
 
@@ -36,9 +36,9 @@
                 <i class="bi bi-flower1 text-success fs-3" aria-hidden="true"></i>
                 <div>
                     <h5 class="mb-0 fw-bold text-dark" id="sidebarOffcanvasLabel">
-                        {% if request.user.permission == 1 %}Supervisor{% elif request.user.permission == 2 %}Administrator{% else %}Viewer{% endif %} Dashboard
+                        {% if request.user.permission == 1 %}Supervisor{% elif request.user.permission == 2 %}
+                            Administrator{% else %}Viewer{% endif %} Dashboard
                     </h5>
-                    <small class="text-muted">Smart Crop Management System</small>
                 </div>
             </div>
         </div>
@@ -50,16 +50,34 @@
                             class="nav-link d-flex align-items-center gap-2 border rounded-3 px-3 py-2 {% if current_view == 'monitoring:get_crop_zone_data' %}active bg-success border-success{% else %}text-success-emphasis border-success-subtle bg-white{% endif %}"
                             href="{% url 'monitoring:get_crop_zone_data' %}"
                     >
-                        <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
+                        <i class="bi bi-graph-up-arrow {% if current_view == 'monitoring:get_crop_zone_data' %}text-white{% else %}text-success{% endif %}" aria-hidden="true"></i>
                         <span>Oil Palm Tree Monitoring</span>
                     </a>
+
+                    <a
+                            class="nav-link d-flex align-items-center gap-2 border rounded-3 px-3 py-2 {% if current_view == 'analyze:upload_oil_palm_tree_image' %}active bg-success border-success{% else %}text-success-emphasis border-success-subtle bg-white{% endif %}"
+                            href="{% url 'analyze:upload_oil_palm_tree_image' %}"
+                    >
+                        <i class="bi bi-graph-up-arrow {% if current_view == 'analyze:upload_oil_palm_tree_image' %}text-white{% else %}text-success{% endif %}" aria-hidden="true"></i>
+                        <span>Oil Palm Tree Analysis</span>
+                    </a>
+
+                    <a
+                            class="nav-link d-flex align-items-center gap-2 border rounded-3 px-3 py-2 {% if current_view == 'ai_assistant:get_chat' %}active bg-success border-success{% else %}text-success-emphasis border-success-subtle bg-white{% endif %}"
+                            href="{% url 'ai_assistant:get_chat' %}"
+                    >
+                        <i class="bi bi-robot {% if current_view == 'ai_assistant:get_chat' %}text-white{% else %}text-success{% endif %}" aria-hidden="true"></i>
+                        <span>AI Assistant</span>
+                    </a>
+
+
 
                     {% if request.user.is_superuser %}
                         <a
                                 class="nav-link d-flex align-items-center gap-2 border rounded-3 px-3 py-2 {% if current_view == 'login_log:get_all_login_ip' or current_view == 'login_log:login_ip_page' %}active bg-success border-success{% else %}text-success-emphasis border-success-subtle bg-white{% endif %}"
                                 href="{% url 'login_log:get_all_login_ip' %}"
                         >
-                            <i class="bi bi-shield-check" aria-hidden="true"></i>
+                            <i class="bi bi-shield-check {% if current_view == 'login_log:get_all_login_ip' or current_view == 'login_log:login_ip_page' %}text-white{% else %}text-success{% endif %}" aria-hidden="true"></i>
                             <span>All Login IP</span>
                         </a>
 
@@ -67,7 +85,7 @@
                                 class="nav-link d-flex align-items-center gap-2 border rounded-3 px-3 py-2 {% if current_view == 'login_log:get_all_login_record' or current_view == 'login_log:login_record_page' %}active bg-success border-success{% else %}text-success-emphasis border-success-subtle bg-white{% endif %}"
                                 href="{% url 'login_log:get_all_login_record' %}"
                         >
-                            <i class="bi bi-clipboard-data" aria-hidden="true"></i>
+                            <i class="bi bi-clipboard-data {% if current_view == 'login_log:get_all_login_record' or current_view == 'login_log:login_record_page' %}text-white{% else %}text-success{% endif %}" aria-hidden="true"></i>
                             <span>All Login Record</span>
                         </a>
                     {% endif %}
@@ -76,7 +94,7 @@
                             class="nav-link d-flex align-items-center gap-2 border rounded-3 px-3 py-2 {% if current_view == 'employee:get_all_employee' or current_view == 'employee:add_employee' or current_view == 'employee:edit_employee' %}active bg-success border-success{% else %}text-success-emphasis border-success-subtle bg-white{% endif %}"
                             href="{% url 'employee:get_all_employee' %}"
                     >
-                        <i class="bi bi-people" aria-hidden="true"></i>
+                        <i class="bi bi-people {% if current_view == 'employee:get_all_employee' or current_view == 'employee:add_employee' or current_view == 'employee:edit_employee' %}text-white{% else %}text-success{% endif %}" aria-hidden="true"></i>
                         <span>All Employee</span>
                     </a>
 
@@ -84,7 +102,7 @@
                             class="nav-link d-flex align-items-center gap-2 border rounded-3 px-3 py-2 {% if current_view == 'employee:get_your_information' %}active bg-success border-success{% else %}text-success-emphasis border-success-subtle bg-white{% endif %}"
                             href="{% url 'employee:get_your_information' %}"
                     >
-                        <i class="bi bi-person-vcard" aria-hidden="true"></i>
+                        <i class="bi bi-person-vcard {% if current_view == 'employee:get_your_information' %}text-white{% else %}text-success{% endif %}" aria-hidden="true"></i>
                         <span>Your Information</span>
                     </a>
                 </nav>

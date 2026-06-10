@@ -1,177 +1,228 @@
 {% extends "navigation_bar.html" %}
 
-{% block title %}Palm Tree R{{ tree.row }}C{{ tree.column }} - Smart Crop{% endblock %}
+{% block title %}Tree R{{ tree.row }}C{{ tree.column }} - AI Oil Palm Mentor System{% endblock %}
 
 {% block page_content %}
-<div class="container-fluid p-0">
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
-        <div>
-            <div class="d-flex align-items-center mb-1">
-                <a href="{% url 'monitoring:zone_detail' zone.id %}" class="btn btn-sm btn-outline-secondary rounded-pill me-3 shadow-sm">
-                    &larr; Back to Zone {{ zone.zone_name }}
-                </a>
-                <h3 class="fw-bold mb-0 text-dark">&#127796; Palm Tree Profile</h3>
-            </div>
-            <span class="text-muted small">Detailed diagnostics and spatial data for individual tree.</span>
-        </div>
+    <style>
+        /* Fade-in animation for page content */
+        .fade-in-content {
+            animation: fadeIn 0.5s ease-in;
+        }
         
-        <div class="d-flex gap-2">
-            <button class="btn btn-primary rounded-pill px-4 shadow-sm">
-                <i class="bi bi-pencil-square"></i> Update Status
-            </button>
-        </div>
-    </div>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    <div class="row g-4">
-        <div class="col-12 col-lg-5 col-xl-4">
-            <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
-                <div class="py-5 text-center {% if tree.status == 1 %}bg-success bg-opacity-10{% else %}bg-danger bg-opacity-10{% endif %} border-bottom">
-                    <div class="display-1 mb-2">
-                        {% if tree.status == 1 %}
-                            &#127796; {% else %}
-                            &#127810; {% endif %}
-                    </div>
-                    <h4 class="fw-bold text-dark mb-0">Tree ID: #{{ tree.id }}</h4>
-                    <p class="text-muted mb-0 mt-1">Planted in Zone {{ zone.zone_name }}</p>
+        /* Status color classes */
+        .status-healthy { background-color: rgba(25, 135, 84, 0.1); border-color: #198754; color: #198754; }
+        .status-nutrient { background-color: rgba(255, 193, 7, 0.1); border-color: #ffc107; color: #ffc107; }
+        .status-sick { background-color: rgba(220, 53, 69, 0.1); border-color: #dc3545; color: #dc3545; }
+        .status-unknown { background-color: rgba(108, 117, 125, 0.1); border-color: #6c757d; color: #6c757d; }
+
+        /* Scrollable text container with max height */
+        .scrollable-text {
+            max-height: 300px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* Custom scrollbar styling */
+        .scrollable-text::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .scrollable-text::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .scrollable-text::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        .scrollable-text::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Circle button style */
+        .btn-circle {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+    </style>
+    
+    <div class="row justify-content-center fade-in-content">
+        <div class="col-12 col-xl-10">
+            <!-- Header -->
+            <div class="mb-4 d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+                <div class="d-flex align-items-center gap-2">
+                    <a href="{% url 'monitoring:zone_detail' zone.id %}" class="btn btn-outline-success btn-circle">
+                        <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                    </a>
+                    <h2 class="fw-bold text-success-emphasis mb-0 d-flex align-items-center gap-2">
+                        <i class="bi bi-tree-fill text-success" aria-hidden="true"></i>
+                        Tree Details - R{{ tree.row }} C{{ tree.column }}
+                    </h2>
                 </div>
-                
-                <div class="card-body p-4">
-                    <h6 class="text-uppercase text-muted small fw-bold mb-3">Location & Identity</h6>
-                    
-                    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
-                        <span class="text-secondary"><i class="bi bi-geo-alt"></i> Zone</span>
-                        <strong class="text-dark">{{ zone.zone_name }}</strong>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
-                        <span class="text-secondary"><i class="bi bi-grid-3x3"></i> Row</span>
-                        <strong class="text-dark">R{{ tree.row }}</strong>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center pb-2 mb-3">
-                        <span class="text-secondary"><i class="bi bi-layout-three-columns"></i> Column</span>
-                        <strong class="text-dark">C{{ tree.column }}</strong>
-                    </div>
+            </div>
 
-                    <h6 class="text-uppercase text-muted small fw-bold mb-3 mt-4">Overall Health</h6>
-                    {% if tree.status == 1 %}
-                        <div class="alert alert-success d-flex align-items-center border-0 shadow-sm mb-0">
-                            <span class="fs-4 me-3">&#9989;</span>
-                            <div>
-                                <h6 class="mb-0 fw-bold">Healthy</h6>
-                                <small>No critical issues detected.</small>
-                            </div>
+            <!-- Main Content Card -->
+            <div class="card card-app shadow-sm">
+                <div class="card-body p-4 p-md-5">
+                    <!-- Image Section (if exists) - MOVED TO TOP -->
+                    {% if tree.image_path %}
+                    <div class="mb-4 pb-4 border-bottom">
+                        <h5 class="fw-bold text-success-emphasis mb-3">
+                            <i class="bi bi-image-fill text-success me-2" aria-hidden="true"></i>
+                            Tree Image
+                        </h5>
+                        <div class="text-center">
+                            <img src="{{ MEDIA_URL }}{{ tree.image_path }}" 
+                                 alt="Tree R{{ tree.row }}C{{ tree.column }}" 
+                                 class="img-fluid rounded-3 shadow-sm" 
+                                 style="max-height: 500px; object-fit: contain;">
                         </div>
-                    {% else %}
-                        <div class="alert alert-danger d-flex align-items-center border-0 shadow-sm mb-0">
-                            <span class="fs-4 me-3">&#9888;&#65039;</span>
-                            <div>
-                                <h6 class="mb-0 fw-bold">Sick / Infected</h6>
-                                <small>Immediate attention required.</small>
-                            </div>
-                        </div>
+                    </div>
                     {% endif %}
-                </div>
-            </div>
-        </div>
 
-        <div class="col-12 col-lg-7 col-xl-8">
-            <div class="row g-4 h-100">
-                
-                <div class="col-12">
-                    <div class="card border-0 shadow-sm rounded-4 h-100">
-                        <div class="card-body p-4">
-                            <div class="d-flex align-items-center mb-3">
-                                <span class="fs-3 me-2 text-primary">&#128200;</span>
-                                <h5 class="fw-bold mb-0 text-dark">Productivity Status</h5>
-                            </div>
+                    <div class="row g-4">
+                        <!-- Left Column: Basic Info -->
+                        <div class="col-12 col-lg-6">
+                            <h5 class="fw-bold text-success-emphasis mb-3 pb-2 border-bottom">
+                                <i class="bi bi-info-circle-fill text-success me-2" aria-hidden="true"></i>
+                                Basic Information
+                            </h5>
                             
-                            <div class="row g-3 mt-2">
-                                <div class="col-12 col-md-6">
-                                    <div class="p-3 bg-light rounded-3 border border-secondary border-opacity-25">
-                                        <span class="text-muted d-block small mb-1">Current Yield Capability</span>
-                                        {% if prod_status_val == 1 %}
-                                            <h4 class="text-success fw-bold mb-0">&#127811; {{ prod_name }}</h4>
-                                        {% elif prod_status_val == 2 %}
-                                            <h4 class="text-secondary fw-bold mb-0">&#127793; {{ prod_name }}</h4>
-                                        {% elif prod_status_val == 3 %}
-                                            <h4 class="text-danger fw-bold mb-0">&#127810; {{ prod_name }}</h4>
-                                        {% else %}
-                                            <h4 class="text-muted fw-bold mb-0">{{ prod_name }}</h4>
-                                        {% endif %}
-                                    </div>
+                            <div class="mb-3">
+                                <label class="text-muted small fw-semibold mb-1 d-block">Tree ID</label>
+                                <div class="fs-5 fw-bold text-dark">#{{ tree.id }}</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="text-muted small fw-semibold mb-1 d-block">Zone</label>
+                                <div class="fs-5 fw-bold text-dark">{{ zone.zone_name }}</div>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-6">
+                                    <label class="text-muted small fw-semibold mb-1 d-block">Row</label>
+                                    <div class="fs-5 fw-bold text-dark">R{{ tree.row }}</div>
                                 </div>
-                                <div class="col-12 col-md-6">
-                                    <div class="p-3 bg-light rounded-3 border border-secondary border-opacity-25">
-                                        <span class="text-muted d-block small mb-1">Soil Nutrition Context</span>
-                                        <div class="d-flex gap-2 flex-wrap mt-1">
-                                            <span class="badge bg-white text-dark border">N: {{ zone.n_value|floatformat:1 }}</span>
-                                            <span class="badge bg-white text-dark border">P: {{ zone.p_value|floatformat:1 }}</span>
-                                            <span class="badge bg-white text-dark border">K: {{ zone.k_value|floatformat:1 }}</span>
-                                            <span class="badge bg-info bg-opacity-10 text-info border border-info">pH: {{ zone.ph|floatformat:1 }}</span>
-                                        </div>
-                                    </div>
+                                <div class="col-6">
+                                    <label class="text-muted small fw-semibold mb-1 d-block">Column</label>
+                                    <div class="fs-5 fw-bold text-dark">C{{ tree.column }}</div>
                                 </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="text-muted small fw-semibold mb-1 d-block">Age</label>
+                                <div class="fs-5 fw-bold text-dark">{{ tree.age }} years</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="text-muted small fw-semibold mb-1 d-block">Status</label>
+                                {% if tree.status == 1 %}
+                                    <span class="badge status-healthy border px-3 py-2 fs-6">Healthy</span>
+                                {% elif tree.status == 2 %}
+                                    <span class="badge status-nutrient border px-3 py-2 fs-6">Nutrient Deficiency</span>
+                                {% elif tree.status == 3 %}
+                                    <span class="badge status-sick border px-3 py-2 fs-6">Sick</span>
+                                {% else %}
+                                    <span class="badge status-unknown border px-3 py-2 fs-6">Unknown</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Disease & Production -->
+                        <div class="col-12 col-lg-6">
+                            <h5 class="fw-bold text-success-emphasis mb-3 pb-2 border-bottom">
+                                <i class="bi bi-bug-fill text-success me-2" aria-hidden="true"></i>
+                                Disease Information
+                            </h5>
+                            
+                            <div class="mb-3">
+                                <label class="text-muted small fw-semibold mb-1 d-block">Disease Type</label>
+                                {% if tree.disease == 1 %}
+                                    <span class="badge bg-success bg-opacity-10 text-success border border-success px-3 py-2 fs-6">None</span>
+                                {% elif tree.disease == 2 %}
+                                    <span class="badge bg-danger bg-opacity-10 text-danger border border-danger px-3 py-2 fs-6">Ganoderma Disease</span>
+                                {% elif tree.disease == 3 %}
+                                    <span class="badge bg-warning bg-opacity-10 text-warning border border-warning px-3 py-2 fs-6">Leaf Spot</span>
+                                {% elif tree.disease == 4 %}
+                                    <span class="badge bg-warning bg-opacity-10 text-warning border border-warning px-3 py-2 fs-6">Anthracnose</span>
+                                {% else %}
+                                    <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary px-3 py-2 fs-6">Unknown</span>
+                                {% endif %}
+                            </div>
+
+                            <h5 class="fw-bold text-success-emphasis mb-3 mt-4 pb-2 border-bottom">
+                                <i class="bi bi-box-seam-fill text-success me-2" aria-hidden="true"></i>
+                                Production Status
+                            </h5>
+                            
+                            <div class="mb-3">
+                                <label class="text-muted small fw-semibold mb-1 d-block">Productivity</label>
+                                {% if tree.productivity == 1 %}
+                                    <span class="badge bg-success bg-opacity-10 text-success border border-success px-3 py-2 fs-6">Producing</span>
+                                {% elif tree.productivity == 2 %}
+                                    <span class="badge bg-warning bg-opacity-10 text-warning border border-warning px-3 py-2 fs-6">Not Producing</span>
+                                {% else %}
+                                    <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary px-3 py-2 fs-6">Unknown</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description Section (if exists) -->
+                    {% if tree.describe %}
+                    <div class="mt-4 pt-4 border-top">
+                        <h5 class="fw-bold text-success-emphasis mb-3">
+                            <i class="bi bi-chat-square-text-fill text-success me-2" aria-hidden="true"></i>
+                            Description
+                        </h5>
+                        <div class="p-3 bg-light rounded-3 border scrollable-text">
+                            <p class="text-dark mb-0">{{ tree.describe|linebreaks }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Image Section Removed (Moved to Top) -->
+
+                    <!-- Timestamps -->
+                    <div class="mt-4 pt-4 border-top">
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
+                                <label class="text-muted small fw-semibold mb-1 d-block">
+                                    <i class="bi bi-calendar-plus me-1" aria-hidden="true"></i>
+                                    Created Time
+                                </label>
+                                <div class="text-dark">{{ tree.created_time|date:"Y-m-d H:i:s" }}</div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="text-muted small fw-semibold mb-1 d-block">
+                                    <i class="bi bi-calendar-check me-1" aria-hidden="true"></i>
+                                    Updated Time
+                                </label>
+                                <div class="text-dark">{{ tree.updated_time|date:"Y-m-d H:i:s" }}</div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="col-12">
-                    <div class="card border-0 shadow-sm rounded-4 h-100">
-                        <div class="card-body p-4">
-                            <div class="d-flex align-items-center mb-3">
-                                <span class="fs-3 me-2 text-danger">&#129656;</span>
-                                <h5 class="fw-bold mb-0 text-dark">Pathology & Diagnoses</h5>
-                            </div>
-
-                            {% if is_clean %}
-                                <div class="bg-success bg-opacity-10 border border-success border-opacity-25 rounded-3 p-4 text-center mt-3">
-                                    <span class="display-6 text-success mb-2 d-block">&#128154;</span>
-                                    <h6 class="fw-bold text-success mb-1">No Diseases Detected</h6>
-                                    <p class="text-muted small mb-0">This palm tree is currently free from any recorded fungal or structural diseases.</p>
-                                </div>
-                            {% else %}
-                                <div class="table-responsive mt-3">
-                                    <table class="table table-borderless align-middle mb-0">
-                                        <thead class="table-light rounded-top">
-                                            <tr>
-                                                <th class="ps-3 rounded-start">Detected Pathogen / Disease</th>
-                                                <th>Severity Factor</th>
-                                                <th class="text-end pe-3 rounded-end">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for disease in active_diseases %}
-                                            <tr class="border-bottom border-light">
-                                                <td class="ps-3 py-3">
-                                                    <div class="d-flex align-items-center">
-                                                        <span class="badge bg-danger p-2 me-3 rounded-circle shadow-sm">
-                                                            <i class="bi bi-bug-fill text-white"></i>
-                                                        </span>
-                                                        <span class="fw-bold text-dark">{{ disease }}</span>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    {% if 'Ganoderma' in disease %}
-                                                        <span class="badge bg-danger bg-opacity-10 text-danger border border-danger">High Risk</span>
-                                                    {% else %}
-                                                        <span class="badge bg-warning bg-opacity-10 text-warning border border-warning">Moderate</span>
-                                                    {% endif %}
-                                                </td>
-                                                <td class="text-end pe-3">
-                                                    <button class="btn btn-sm btn-outline-danger rounded-pill">Log Treatment</button>
-                                                </td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>
-</div>
 {% endblock %}

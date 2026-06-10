@@ -1,6 +1,10 @@
 {% extends "background.html" %}
 
-{% block title %}Login - Smart Crop Management{% endblock %}
+{% block title %}Login - AI Oil Palm Mentor System{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+{% endblock %}
 
 {# 登录页：收紧整条内容区宽度，白卡片与表单比例协调（不受仪表盘 1600px 影响） #}
 {% block content_shell_class %}position-relative px-3 px-sm-4 mx-auto w-100{% endblock %}
@@ -10,15 +14,22 @@
     <div class="row justify-content-center">
         <div class="col-12">
             <div class="text-center mb-4 mb-md-5">
-                <h1 class="fw-bold text-success-emphasis mb-2">Smart Crop Management</h1>
-                <p class="text-secondary mb-0">Sign in to manage crops, monitor fields, and track insights.</p>
+                <div class="mb-3">
+                    <i class="bi bi-flower1 display-4 text-success" aria-hidden="true"></i>
+                </div>
+                <h1 class="fw-bold text-success-emphasis mb-2">
+                    AI Oil Palm Mentor System
+                </h1>
             </div>
 
             <form method="post" novalidate>
                 {% csrf_token %}
 
                 <div class="mb-3">
-                    <label for="username" class="form-label fw-semibold">Username</label>
+                    <label for="username" class="form-label fw-semibold">
+                        <i class="bi bi-person-fill me-1 text-success" aria-hidden="true"></i>
+                        Username
+                    </label>
                     <input
                             type="text"
                             id="username"
@@ -29,7 +40,10 @@
                 </div>
 
                 <div class="mb-2">
-                    <label for="password" class="form-label fw-semibold">Password</label>
+                    <label for="password" class="form-label fw-semibold">
+                        <i class="bi bi-lock-fill me-1 text-success" aria-hidden="true"></i>
+                        Password
+                    </label>
                     <div class="input-group input-group-lg has-validation">
                         <input
                                 type="password"
@@ -45,7 +59,7 @@
                                 aria-label="Toggle password visibility"
                                 title="Show password"
                         >
-                            <span id="togglePasswordIcon" aria-hidden="true">👁️</span>
+                            <i id="togglePasswordIcon" class="bi bi-eye" aria-hidden="true"></i>
                         </button>
                     </div>
                 </div>
@@ -77,7 +91,7 @@
                     var isPassword = passwordInput.getAttribute('type') === 'password';
                     passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
                     if (icon) {
-                        icon.textContent = isPassword ? '🙈' : '👁️';
+                        icon.className = isPassword ? 'bi bi-eye-slash' : 'bi bi-eye';
                     }
                     toggleBtn.setAttribute('title', isPassword ? 'Hide password' : 'Show password');
                 });

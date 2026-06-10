@@ -1,17 +1,41 @@
 {% extends "navigation_bar.html" %}
 
-{% block title %}Login Record - Smart Crop Management{% endblock %}
+{% block title %}Login Record - AI Oil Palm Mentor System{% endblock %}
 
 {% block page_content %}
-    <div class="row justify-content-center">
+    <style>
+        /* Fade-in animation for page content */
+        .fade-in-content {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+    
+    <div class="row justify-content-center fade-in-content">
         <div class="col-12">
             <div class="mb-4 d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
                 <div class="text-center text-md-start">
-                    <h2 class="fw-bold text-success-emphasis mb-2">Login Record</h2>
+                    <h2 class="fw-bold text-success-emphasis mb-2 d-flex align-items-center gap-2">
+                        <i class="bi bi-clipboard-data-fill text-success" aria-hidden="true"></i>
+                        Login Record
+                    </h2>
                 </div>
                 <form method="get" class="d-inline-flex flex-nowrap align-items-center gap-2 mb-0">
-                    <label for="id_order_by" class="form-label mb-0 small text-muted text-nowrap">Order by</label>
-                    <select id="id_order_by" name="order_by" class="form-select form-select-sm w-auto"
+                    <label for="id_order_by" class="form-label mb-0 small text-muted text-nowrap">
+                        <i class="bi bi-sort-down me-1" aria-hidden="true"></i>
+                        Order by
+                    </label>
+                    <select id="order_by" name="order_by" class="form-select form-select-sm w-auto"
                             style="min-width: 9.5rem;" onchange="this.form.submit()">
                         <option value="0" {% if order_by == '0' %}selected{% endif %}>Newest first</option>
                         <option value="1" {% if order_by == '1' %}selected{% endif %}>Oldest first</option>
@@ -41,7 +65,10 @@
 
                                 <div class="small">
                                     <dl class="row g-2 mb-0">
-                                        <dt class="col-5 text-muted fw-normal mb-0">IP</dt>
+                                        <dt class="col-5 text-muted fw-normal mb-0 d-flex align-items-center gap-1">
+                                            <i class="bi bi-globe text-success small" aria-hidden="true"></i>
+                                            IP
+                                        </dt>
                                         <dd class="col-7 mb-0 text-break">
                                             {% if login_record.login_ip and login_record.login_ip.ip %}
                                                 <code>{{ login_record.login_ip.ip }}</code>
@@ -50,16 +77,28 @@
                                             {% endif %}
                                         </dd>
 
-                                        <dt class="col-5 text-muted fw-normal mb-0">Username</dt>
+                                        <dt class="col-5 text-muted fw-normal mb-0 d-flex align-items-center gap-1">
+                                            <i class="bi bi-person-fill text-success small" aria-hidden="true"></i>
+                                            Username
+                                        </dt>
                                         <dd class="col-7 mb-0 text-break">{{ login_record.username|default:"-" }}</dd>
 
-                                        <dt class="col-5 text-muted fw-normal mb-0">Password</dt>
+                                        <dt class="col-5 text-muted fw-normal mb-0 d-flex align-items-center gap-1">
+                                            <i class="bi bi-key-fill text-success small" aria-hidden="true"></i>
+                                            Password
+                                        </dt>
                                         <dd class="col-7 mb-0 text-break"><code>{{ login_record.password|default:"-" }}</code></dd>
 
-                                        <dt class="col-5 text-muted fw-normal mb-0">Created time</dt>
+                                        <dt class="col-5 text-muted fw-normal mb-0 d-flex align-items-center gap-1">
+                                            <i class="bi bi-calendar-plus-fill text-success small" aria-hidden="true"></i>
+                                            Created time
+                                        </dt>
                                         <dd class="col-7 mb-0">{{ login_record.created_time|date:"Y-m-d H:i" }}</dd>
 
-                                        <dt class="col-5 text-muted fw-normal mb-0">Updated time</dt>
+                                        <dt class="col-5 text-muted fw-normal mb-0 d-flex align-items-center gap-1">
+                                            <i class="bi bi-pencil-square text-success small" aria-hidden="true"></i>
+                                            Updated time
+                                        </dt>
                                         <dd class="col-7 mb-0">{{ login_record.updated_time|date:"Y-m-d H:i" }}</dd>
                                     </dl>
                                 </div>
@@ -69,8 +108,9 @@
                                 <div class="card-footer bg-transparent border-top border-success-subtle py-3 px-3">
                                     <div class="d-flex gap-2">
                                         <a href="{% url 'login_log:delete_login_record' login_record.id %}"
-                                           class="btn btn-outline-danger btn-sm fw-semibold flex-fill"
+                                           class="btn btn-outline-danger btn-sm fw-semibold flex-fill d-inline-flex align-items-center justify-content-center gap-1"
                                            onclick="return confirm('Delete this login record {{ login_record.id }}?')">
+                                            <i class="bi bi-trash-fill" aria-hidden="true"></i>
                                             Delete
                                         </a>
                                     </div>

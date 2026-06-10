@@ -1,17 +1,41 @@
 {% extends "navigation_bar.html" %}
 
-{% block title %}All Employees - Smart Crop Management{% endblock %}
+{% block title %}All Employees - AI Oil Palm Mentor System{% endblock %}
 
 {% block page_content %}
-    <div class="row justify-content-center">
+    <style>
+        /* Fade-in animation for page content */
+        .fade-in-content {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+    
+    <div class="row justify-content-center fade-in-content">
         <div class="col-12">
             <div class="mb-4 d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
                 <div class="text-center text-md-start">
-                    <h2 class="fw-bold text-success-emphasis mb-2">All Employee</h2>
+                    <h2 class="fw-bold text-success-emphasis mb-2 d-flex align-items-center gap-2">
+                        <i class="bi bi-people-fill text-success" aria-hidden="true"></i>
+                        All Employee
+                    </h2>
                 </div>
                 <form method="get" class="d-inline-flex flex-nowrap align-items-center gap-2 mb-0">
-                    <label for="id_order_by" class="form-label mb-0 small text-muted text-nowrap">Order by</label>
-                    <select id="id_order_by" name="order_by" class="form-select form-select-sm w-auto"
+                    <label for="order_by" class="form-label mb-0 small text-muted text-nowrap">
+                        <i class="bi bi-sort-down me-1" aria-hidden="true"></i>
+                        Order by
+                    </label>
+                    <select id="order_by" name="order_by" class="form-select form-select-sm w-auto"
                             style="min-width: 9.5rem;"
                             onchange="this.form.submit()">
                         <option value="0" {% if order_by == '0' %}selected{% endif %}>Newest first</option>
@@ -22,8 +46,9 @@
 
             {% if permission == 1 %}
                 <div class="mb-3 text-start">
-                    <a href="{% url 'employee:add_employee' %}" class="btn btn-success fw-semibold">
-                        + Add employee
+                    <a href="{% url 'employee:add_employee' %}" class="btn btn-success fw-semibold d-inline-flex align-items-center gap-2">
+                        <i class="bi bi-person-plus-fill" aria-hidden="true"></i>
+                        Add employee
                     </a>
                 </div>
             {% endif %}
@@ -49,7 +74,7 @@
                                         {% if not employee.profile_image %}
                                             <div class="rounded-circle border border-success-subtle bg-light d-flex align-items-center justify-content-center flex-shrink-0"
                                                  style="width: 44px; height: 44px;">
-                                                <span aria-hidden="true">👤</span>
+                                                <i class="bi bi-person-fill text-success fs-5" aria-hidden="true"></i>
                                             </div>
                                         {% endif %}
                                         <div class="min-w-0 overflow-hidden">
@@ -62,11 +87,6 @@
                                 </div>
 
                                 <div class="d-flex flex-wrap gap-2 mb-3">
-
-
-                                    {% if employee.is_superuser %}
-                                        <span class="badge bg-warning text-dark">Superuser</span>
-                                    {% endif %}
 
                                     {% if employee.permission == 1 %}
                                         <span class="badge bg-dark">Supervisor</span>
@@ -93,38 +113,62 @@
 
                                 <div class="small">
                                     <dl class="row g-2 mb-0">
-                                        <dt class="col-5 text-muted fw-normal mb-0">Email</dt>
+                                        <dt class="col-5 text-muted fw-normal mb-0 d-flex align-items-center gap-1">
+                                            <i class="bi bi-envelope-fill text-success small" aria-hidden="true"></i>
+                                            Email
+                                        </dt>
                                         <dd class="col-7 mb-0 text-break">{{ employee.email|default:"-" }}</dd>
-                                        <dt class="col-5 text-muted fw-normal mb-0">Phone</dt>
+                                        <dt class="col-5 text-muted fw-normal mb-0 d-flex align-items-center gap-1">
+                                            <i class="bi bi-telephone-fill text-success small" aria-hidden="true"></i>
+                                            Phone
+                                        </dt>
                                         <dd class="col-7 mb-0">{{ employee.phone|default:"-" }}</dd>
 
-                                        <dt class="col-5 text-muted fw-normal mb-0">Birth date</dt>
+                                        <dt class="col-5 text-muted fw-normal mb-0 d-flex align-items-center gap-1">
+                                            <i class="bi bi-calendar-event-fill text-success small" aria-hidden="true"></i>
+                                            Birth date
+                                        </dt>
                                         <dd class="col-7 mb-0">
                                             {% if employee.birth_date %}{{ employee.birth_date|date:"Y-m-d" }}{% else %}
                                                 -{% endif %}</dd>
 
-                                        <dt class="col-5 text-muted fw-normal mb-0">Age</dt>
+                                        <dt class="col-5 text-muted fw-normal mb-0 d-flex align-items-center gap-1">
+                                            <i class="bi bi-calendar3 text-success small" aria-hidden="true"></i>
+                                            Age
+                                        </dt>
                                         <dd class="col-7 mb-0">
                                             {% if employee.age is not None %}{{ employee.age }}{% else %}
                                                 -{% endif %}</dd>
 
-                                        <dt class="col-5 text-muted fw-normal mb-0">Gender</dt>
+                                        <dt class="col-5 text-muted fw-normal mb-0 d-flex align-items-center gap-1">
+                                            <i class="bi bi-gender-ambiguous text-success small" aria-hidden="true"></i>
+                                            Gender
+                                        </dt>
                                         <dd class="col-7 mb-0">
-                                            {% if employee.gender == 1 %}Male (1)
-                                            {% elif employee.gender == 2 %}Female (2)
+                                            {% if employee.gender == 1 %}Male
+                                            {% elif employee.gender == 2 %}Female
                                             {% else %}-{% endif %}
                                         </dd>
 
 
-                                        <dt class="col-5 text-muted fw-normal mb-0">Last login</dt>
+                                        <dt class="col-5 text-muted fw-normal mb-0 d-flex align-items-center gap-1">
+                                            <i class="bi bi-clock-fill text-success small" aria-hidden="true"></i>
+                                            Last login
+                                        </dt>
                                         <dd class="col-7 mb-0">{% if employee.last_login %}
                                             {{ employee.last_login|date:"Y-m-d H:i" }}{% else %}-{% endif %}</dd>
 
-                                        <dt class="col-5 text-muted fw-normal mb-0">Date joined</dt>
+                                        <dt class="col-5 text-muted fw-normal mb-0 d-flex align-items-center gap-1">
+                                            <i class="bi bi-calendar-plus-fill text-success small" aria-hidden="true"></i>
+                                            Date joined
+                                        </dt>
                                         <dd class="col-7 mb-0">{% if employee.date_joined %}
                                             {{ employee.date_joined|date:"Y-m-d H:i" }}{% else %}-{% endif %}</dd>
 
-                                        <dt class="col-5 text-muted fw-normal mb-0">Updated date</dt>
+                                        <dt class="col-5 text-muted fw-normal mb-0 d-flex align-items-center gap-1">
+                                            <i class="bi bi-pencil-square text-success small" aria-hidden="true"></i>
+                                            Updated date
+                                        </dt>
                                         <dd class="col-7 mb-0">{% if employee.updated_date %}
                                             {{ employee.updated_date|date:"Y-m-d" }}{% else %}-{% endif %}</dd>
                                     </dl>
@@ -134,17 +178,20 @@
                                 <div class="card-footer bg-transparent border-top border-success-subtle py-3 px-3">
                                     <div class="d-flex gap-2">
                                         <a href="{% url 'employee:edit_employee' employee.id %}"
-                                           class="btn btn-outline-primary btn-sm fw-semibold flex-fill">
+                                           class="btn btn-outline-primary btn-sm fw-semibold flex-fill d-inline-flex align-items-center justify-content-center gap-1">
+                                            <i class="bi bi-pencil-fill" aria-hidden="true"></i>
                                             Edit
                                         </a>
                                         <a href="{% url 'employee:toggle_employee_active' employee.id %}"
-                                           class="btn btn-outline-warning btn-sm fw-semibold flex-fill"
+                                           class="btn btn-outline-warning btn-sm fw-semibold flex-fill d-inline-flex align-items-center justify-content-center gap-1"
                                            onclick="return confirm('{% if employee.is_active %}Disable{% else %}Enable{% endif %} this employee {{ employee.username|escapejs }}?')">
+                                            <i class="bi {% if employee.is_active %}bi-toggle-off{% else %}bi-toggle-on{% endif %}" aria-hidden="true"></i>
                                             {% if employee.is_active %}Disable{% else %}Enable{% endif %}
                                         </a>
                                         <a href="{% url 'employee:delete_employee' employee.id %}"
-                                           class="btn btn-outline-danger btn-sm fw-semibold flex-fill"
+                                           class="btn btn-outline-danger btn-sm fw-semibold flex-fill d-inline-flex align-items-center justify-content-center gap-1"
                                            onclick="return confirm('Delete this employee {{ employee.username|escapejs }}?');">
+                                            <i class="bi bi-trash-fill" aria-hidden="true"></i>
                                             Delete
                                         </a>
                                     </div>

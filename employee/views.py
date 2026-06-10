@@ -3,6 +3,8 @@ from django.shortcuts import render
 from django.views import View
 
 from employee.models import Employee
+from utils import delete_image
+from utils.delete_image import delete_single_image
 from utils.get_data import get_data_by_page
 from utils.save_profile_image import save_profile_image
 from utils.verify import verify_permission, verify_username, verify_password, verify_password_match, verify_first_name, \
@@ -91,7 +93,7 @@ class AddEmployee(LoginRequiredMixin, View):
 
         is_active = request.POST.get('is_active') or None
 
-        profile_image = request.POST.get('profile_image') or None
+        profile_image = request.FILES.get('profile_image') or None
         if verify_image(profile_image, request, redirect) != True:
             return verify_image(profile_image, request, redirect)
 
@@ -176,7 +178,9 @@ class EditEmployee(LoginRequiredMixin, View):
 
         is_active = request.POST.get('is_active') or None
 
-        profile_image = request.POST.get('profile_image') or None
+        old_profile_image = request.user.profile_image.name.split('/')[-1]
+
+        profile_image = request.FILES.get('profile_image') or None
         profile_image_path = None
         profile_image_clear = request.POST.get('profile_image-clear') or None
         if profile_image and not profile_image_clear:
@@ -185,6 +189,7 @@ class EditEmployee(LoginRequiredMixin, View):
                 return verify_image(profile_image, request, redirect)
 
             profile_image_path = save_profile_image(profile_image, 'profile_image')
+            delete_single_image(old_profile_image, 'profile_image')
 
         employee = Employee.objects.get(id=id)
         if employee:
@@ -293,7 +298,10 @@ class GetYourInformation(LoginRequiredMixin, View):
 
         is_active = request.POST.get('is_active') or None
 
-        profile_image = request.POST.get('profile_image') or None
+        old_profile_image = request.user.profile_image.name.split('/')[-1]
+
+        profile_image = request.FILES.get('profile_image') or None
+        print(profile_image )
         profile_image_path = None
         profile_image_clear = request.POST.get('profile_image-clear') or None
         if profile_image and not profile_image_clear:
@@ -302,6 +310,7 @@ class GetYourInformation(LoginRequiredMixin, View):
                 return verify_image(profile_image, request, redirect)
 
             profile_image_path = save_profile_image(profile_image, 'profile_image')
+            delete_single_image(old_profile_image, 'profile_image')
 
         employee = Employee.objects.get(id=id)
         if employee:
@@ -323,4 +332,4 @@ class GetYourInformation(LoginRequiredMixin, View):
             elif profile_image:
                 employee.profile_image = profile_image_path
         employee.save()
-        return hint_message(request, 'Edit employee successful.', 'employee:get_all_employee')
+        return hint_message(request, 'Edit your information successful.', 'employee:get_your_information')

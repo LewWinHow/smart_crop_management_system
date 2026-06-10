@@ -44,7 +44,7 @@ class GetAllLoginRecord(LoginRequiredMixin, View):
 
 class ToggleLoginIPStatus(LoginRequiredMixin, View):
     def get(self, request, id):
-        permission = request.user.permission
+        permission = request.employee.permission
         if verify_permission(permission, 1):
             return verify_permission(permission, 1)
 
@@ -63,7 +63,7 @@ class ToggleLoginIPStatus(LoginRequiredMixin, View):
 
 class DeleteLoginIP(LoginRequiredMixin, View):
     def get(self, request, id):
-        permission = request.user.permission
+        permission = request.employee.permission
         if verify_permission(permission, 1):
             return verify_permission(permission, 1)
 
@@ -78,7 +78,7 @@ class DeleteLoginIP(LoginRequiredMixin, View):
 
 class DeleteLoginRecord(LoginRequiredMixin, View):
     def get(self, request, id):
-        permission = request.user.permission
+        permission = request.employee.permission
         if verify_permission(permission, 1):
             return verify_permission(permission, 1)
 
