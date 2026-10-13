@@ -174,7 +174,7 @@ class GetCropZoneData(LoginRequiredMixin, View):
             "unknown": total_unknown,
         }
 
-        return render(request, self.template_name, {
+        return render(request, 'monitoring/monitoring.html', {
             "zones": zone_list,
             "global": global_data,
             "current_temp": current_temp,
@@ -206,7 +206,6 @@ class GetCropZoneData(LoginRequiredMixin, View):
 
 
 class ZoneDetailView(LoginRequiredMixin, View):
-    template_name = 'monitoring/zone_detail.html'
 
     def get(self, request, zone_id):
         # Get specific Zone with related data
@@ -254,11 +253,10 @@ class ZoneDetailView(LoginRequiredMixin, View):
             "infection_rate": infection_rate,
             "tree_list": json.dumps(tree_list),
         }
-        return render(request, self.template_name, context)
+        return render(request, 'monitoring/zone_detail.html', context)
 
 
 class TreeDetailView(LoginRequiredMixin, View):
-    template_name = 'monitoring/tree_detail.html'
 
     def get(self, request, tree_id):
         # Get specific tree with related Zone
@@ -304,4 +302,4 @@ class TreeDetailView(LoginRequiredMixin, View):
             'productivity': tree.productivity,
             'status_name': status_map.get(tree.status, 'Unknown'),
         }
-        return render(request, self.template_name, context)
+        return render(request, 'monitoring/tree_detail.html', context)

@@ -6,7 +6,7 @@ from django.views import View
 
 from monitoring.models import OilPalmTree, Zone
 from utils import save_image
-from utils.qq import pipeline
+from utils.detect_oil_palm_workflow import pipeline
 from utils.save_image import save_image
 
 
